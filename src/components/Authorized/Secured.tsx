@@ -1,5 +1,5 @@
-import React from'react';
-import CheckPermissions from'./CheckPermissions';
+import React from 'react';
+import CheckPermissions from './CheckPermissions';
 
 /**
  * No page can be visited by default

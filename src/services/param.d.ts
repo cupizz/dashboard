@@ -3,4 +3,9 @@ export namespace Params {
     username: string;
     password: string;
   };
+
+  export enum UserStatus {
+    enabled = 'enabled',
+    disabled = 'disabled',
+  }
 }

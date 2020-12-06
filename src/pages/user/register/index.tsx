@@ -1,7 +1,6 @@
-import { Form, Button, Col, Input, Popover, Progress, Row, Select, message } from 'antd';
-import React, { FC, useState, useEffect } from 'react';
-import { Link, connect, history, FormattedMessage, formatMessage, Dispatch } from 'umi';
-
+import { Button, Col, Form, Input, message, Popover, Progress, Row, Select } from 'antd';
+import React, { FC, useEffect, useState } from 'react';
+import { connect, Dispatch, FormattedMessage, history, Link, useIntl } from 'umi';
 import { StateType } from './model';
 import styles from './style.less';
 
@@ -60,6 +59,7 @@ const Register: FC<RegisterProps> = ({ submitting, dispatch, userAndregister }) 
   const confirmDirty = false;
   let interval: number | undefined;
   const [form] = Form.useForm();
+  const { formatMessage } = useIntl();
   useEffect(() => {
     if (!userAndregister) {
       return;

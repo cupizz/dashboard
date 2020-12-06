@@ -1,11 +1,10 @@
 import { ConnectState } from '@/models/connect';
-import GraphQLClient from '@/utils/GraphQLClient';
 import { getMenuData, getPageTitle, MenuDataItem } from '@ant-design/pro-layout';
-import { ApolloProvider } from '@apollo/client';
 import React from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { connect, ConnectProps, FormattedMessage, Link, SelectLang, useIntl } from 'umi';
 import logo from '../assets/logo.svg';
+import BaseLayout from './BaseLayout';
 import styles from './UserLayout.less';
 
 export interface UserLayoutProps extends Partial<ConnectProps> {
@@ -36,7 +35,7 @@ const UserLayout: React.FC<UserLayoutProps> = (props) => {
     ...props,
   });
   return (
-    <ApolloProvider client={GraphQLClient}>
+    <BaseLayout>
       <HelmetProvider>
         <Helmet>
           <title>{title}</title>
@@ -67,7 +66,7 @@ const UserLayout: React.FC<UserLayoutProps> = (props) => {
           {/* <DefaultFooter /> */}
         </div>
       </HelmetProvider>
-    </ApolloProvider>
+    </BaseLayout>
   );
 };
 

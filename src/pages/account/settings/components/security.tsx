@@ -1,7 +1,6 @@
-import { FormattedMessage, formatMessage } from 'umi';
-import React, { Component } from 'react';
-
 import { List } from 'antd';
+import React from 'react';
+import { FormattedMessage, useIntl } from 'umi';
 
 type Unpacked<T> = T extends (infer U)[] ? U : T;
 
@@ -24,8 +23,9 @@ const passwordStrength = {
   ),
 };
 
-class SecurityView extends Component {
-  getData = () => [
+const SecurityView = () => {
+  const { formatMessage } = useIntl();
+  const getData = () => [
     {
       title: formatMessage({ id: 'accountandsettings.security.password' }, {}),
       description: (
@@ -83,23 +83,20 @@ class SecurityView extends Component {
       ],
     },
   ];
-
-  render() {
-    const data = this.getData();
-    return (
-      <>
-        <List<Unpacked<typeof data>>
-          itemLayout="horizontal"
-          dataSource={data}
-          renderItem={(item) => (
-            <List.Item actions={item.actions}>
-              <List.Item.Meta title={item.title} description={item.description} />
-            </List.Item>
-          )}
-        />
-      </>
-    );
-  }
-}
+  const data = getData();
+  return (
+    <>
+      <List<Unpacked<typeof data>>
+        itemLayout="horizontal"
+        dataSource={data}
+        renderItem={(item) => (
+          <List.Item actions={item.actions}>
+            <List.Item.Meta title={item.title} description={item.description} />
+          </List.Item>
+        )}
+      />
+    </>
+  );
+};
 
 export default SecurityView;

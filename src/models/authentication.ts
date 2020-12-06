@@ -1,5 +1,6 @@
 import { AuthenticateService } from '@/services/AuthenticationService';
 import { setAuthority } from '@/utils/authority';
+import Logger from '@/utils/Logger';
 import { getPageQuery } from '@/utils/utils';
 import { stringify } from 'querystring';
 import { Effect, history, Reducer } from 'umi';
@@ -11,13 +12,17 @@ export interface AuthenticationStateType {
   currentAuthority?: 'user' | 'guest' | 'admin';
 }
 
-export interface LoginModelType {
+export interface IAuthenticationModelEffect<T> {
+  login: T;
+  logout: T;
+}
+
+export interface AuthenticationModelEffectType extends IAuthenticationModelEffect<Effect> {}
+
+export interface AuthenticationModelType {
   namespace: 'authentication';
   state: AuthenticationStateType;
-  effects: {
-    login: Effect;
-    logout: Effect;
-  };
+  effects: AuthenticationModelEffectType;
   reducers: {
     changeLoginStatus: Reducer<AuthenticationStateType>;
   };
@@ -27,7 +32,7 @@ const removeToken = () => {
   localStorage.removeItem(ACCESS_TOKEN);
 };
 
-const Model: LoginModelType = {
+const AuthenticationModel: AuthenticationModelType = {
   namespace: 'authentication',
 
   state: {
@@ -36,11 +41,18 @@ const Model: LoginModelType = {
 
   effects: {
     *login({ payload }, { call, put }) {
-      const response = yield call(AuthenticateService.postAuthLogin, payload);
-      yield put({
-        type: 'changeLoginStatus',
-        payload: response,
-      });
+      try {
+        const response = yield call(AuthenticateService.postAuthLogin, payload);
+        yield put({
+          type: 'changeLoginStatus',
+          payload: response,
+        });
+        return response;
+      } catch (error) {
+        Logger.error(error);
+        return null;
+      }
+
       // Login successfully
       // if (response.status === 'ok') {
       //   const urlParams = new URL(window.location.href);
@@ -61,8 +73,6 @@ const Model: LoginModelType = {
       //   }
       //   history.replace(redirect || '/');
       // }
-
-      return response;
     },
 
     logout() {
@@ -92,4 +102,4 @@ const Model: LoginModelType = {
   },
 };
 
-export default Model;
+export default AuthenticationModel;

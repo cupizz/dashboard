@@ -1,9 +1,8 @@
 import { CloseCircleOutlined, RightOutlined } from '@ant-design/icons';
-import { Button, Card, Result } from 'antd';
-import { FormattedMessage, formatMessage } from 'umi';
-import React, { Fragment } from 'react';
-
 import { GridContent } from '@ant-design/pro-layout';
+import { Button, Card, Result } from 'antd';
+import React, { Fragment } from 'react';
+import { FormattedMessage, useIntl } from 'umi';
 import styles from './index.less';
 
 const Content = (
@@ -39,22 +38,30 @@ const Content = (
   </Fragment>
 );
 
-export default () => (
-  <GridContent>
-    <Card bordered={false}>
-      <Result
-        status="error"
-        title={formatMessage({ id: 'resultandfail.error.title' })}
-        subTitle={formatMessage({ id: 'resultandfail.error.description' })}
-        extra={
-          <Button type="primary">
-            <FormattedMessage id="resultandfail.error.btn-text" defaultMessage="Return to modify" />
-          </Button>
-        }
-        style={{ marginTop: 48, marginBottom: 16 }}
-      >
-        {Content}
-      </Result>
-    </Card>
-  </GridContent>
-);
+const FailContainer = () => {
+  const { formatMessage } = useIntl();
+  return (
+    <GridContent>
+      <Card bordered={false}>
+        <Result
+          status="error"
+          title={formatMessage({ id: 'resultandfail.error.title' })}
+          subTitle={formatMessage({ id: 'resultandfail.error.description' })}
+          extra={
+            <Button type="primary">
+              <FormattedMessage
+                id="resultandfail.error.btn-text"
+                defaultMessage="Return to modify"
+              />
+            </Button>
+          }
+          style={{ marginTop: 48, marginBottom: 16 }}
+        >
+          {Content}
+        </Result>
+      </Card>
+    </GridContent>
+  );
+};
+
+export default FailContainer;

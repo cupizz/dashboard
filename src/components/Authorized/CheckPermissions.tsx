@@ -1,7 +1,7 @@
-import React from'react';
-import {CURRENT} from'./renderAuthorize';
+import React from 'react';
+import { CURRENT } from './renderAuthorize';
 // eslint-disable-next-line import/no-cycle
-import PromiseRender from'./PromiseRender';
+import PromiseRender from './PromiseRender';
 
 export type IAuthorityType =
   | undefined
@@ -41,7 +41,7 @@ const checkPermissions = <T, K>(
     return Exception;
   }
   // string processing
-  if (typeof authority ==='string') {
+  if (typeof authority === 'string') {
     if (Array.isArray(currentAuthority)) {
       if (currentAuthority.some((item) => authority === item)) {
         return target;
@@ -56,7 +56,7 @@ const checkPermissions = <T, K>(
     return <PromiseRender<T, K> ok={target} error={Exception} promise={authority} />;
   }
   // Function processing
-  if (typeof authority ==='function') {
+  if (typeof authority === 'function') {
     const bool = authority(currentAuthority);
     // The return value after the function is executed is Promise
     if (bool instanceof Promise) {
@@ -70,7 +70,7 @@ const checkPermissions = <T, K>(
   throw new Error('unsupported parameters');
 };
 
-export {checkPermissions };
+export { checkPermissions };
 
 function check<T, K>(authority: IAuthorityType, target: T, Exception: K): T | K | React.ReactNode {
   return checkPermissions<T, K>(authority, CURRENT, target, Exception);

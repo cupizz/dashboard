@@ -1,35 +1,44 @@
+import { UserService } from '@/services';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
+import { PageContainer } from '@ant-design/pro-layout';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
-import { Button, Drawer, Input, message } from 'antd';
+import { ApolloError } from '@apollo/client';
+import { Badge, Drawer, Image, message, Modal, Space, Tooltip, Typography } from 'antd';
+import { SortOrder } from 'antd/lib/table/interface';
 import React, { useRef, useState } from 'react';
-import { UserTableListItem } from './data.d';
-import { removeRule } from './service';
+import { OnlineStatus, UserStatus, UserTableListItem } from './data.d';
 
-/**
- * Delete node
- * @param selectedRows
- */
-const handleRemove = async (selectedRows: UserTableListItem[]) => {
-  const hide = message.loading('Deleting');
-  if (!selectedRows) return true;
-  try {
-    await removeRule({
-      key: selectedRows.map((row) => row.key),
-    });
-    hide();
-    message.success('Delete successfully, will refresh soon');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('Deletion failed, please try again');
-    return false;
-  }
-};
+const { Title } = Typography;
 
 const UserTableList: React.FC<{}> = () => {
   const actionRef = useRef<ActionType>();
   const [row, setRow] = useState<UserTableListItem>();
+
+  const handleUpdateStatus = (user: UserTableListItem) => {
+    Modal.confirm({
+      title: 'Confirm',
+      icon: <ExclamationCircleOutlined />,
+      content: 'Bạn có muốn thay đổi trạng thái user này ko?',
+      okText: 'Oke',
+      cancelText: 'Cancel',
+      onOk: () => {
+        UserService.updateUserStatus({
+          id: user.id,
+          status: user.status === UserStatus.enabled ? UserStatus.disabled : UserStatus.enabled,
+        })
+          .then(() => {
+            message.success('Cập nhật trạng thái thành công');
+            actionRef.current?.reload();
+          })
+          .catch((error: ApolloError) => {
+            message.error(error.message);
+          });
+      },
+    });
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedRowsState, setSelectedRows] = useState<UserTableListItem[]>([]);
   const columns: ProColumns<UserTableListItem>[] = [
     {
@@ -43,15 +52,74 @@ const UserTableList: React.FC<{}> = () => {
           },
         ],
       },
-      // render: (dom, entity) => {
-      //   return <a onClick={() => setRow(entity)}>{dom}</a>;
-      // },
-      renderText: (val: string) => `${val}`,
+      render: (dom, entity) => {
+        return <a onClick={() => setRow(entity)}>{dom}</a>;
+      },
     },
     {
       title: 'nick name',
-      dataIndex: 'name',
-      tip: 'name is the only key',
+      dataIndex: 'nickName',
+      tip: 'nick name is the only key',
+      sorter: true,
+    },
+    {
+      title: 'gender',
+      dataIndex: 'gender',
+      sorter: true,
+    },
+    {
+      title: 'birthday',
+      dataIndex: 'birthday',
+      sorter: true,
+      filters: true,
+    },
+    {
+      title: 'phone',
+      dataIndex: 'phoneNumber',
+      sorter: true,
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      filters: true,
+      valueType: 'select',
+      valueEnum: {
+        enabled: { text: 'enabled', status: 'enabled' },
+        disabled: {
+          text: 'disabled',
+          disabled: 'disabled',
+        },
+      },
+      sorter: true,
+    },
+    {
+      title: 'Created At',
+      dataIndex: 'createdAt',
+      sorter: true,
+      valueType: 'dateTime',
+      hideInForm: true,
+    },
+    {
+      title: 'Operation',
+      valueType: 'option',
+      render: (_, entity) => (
+        <>
+          <a
+            onClick={() => {
+              handleUpdateStatus(entity);
+            }}
+          >
+            Update status
+          </a>
+        </>
+      ),
+    },
+  ];
+
+  const columnsDescription: ProColumns<UserTableListItem>[] = [
+    {
+      title: 'id',
+      dataIndex: 'id',
       formItemProps: {
         rules: [
           {
@@ -60,51 +128,128 @@ const UserTableList: React.FC<{}> = () => {
           },
         ],
       },
-      renderText: (val: string) => `${val}`,
+      render: (dom) => {
+        return <a>{dom}</a>;
+      },
     },
     {
-      title: 'email',
-      dataIndex: 'email',
-      valueType: 'textarea',
+      title: 'avatar',
+      dataIndex: 'avatar',
+      render: (_, entity) => {
+        return <Image width={64} height={64} src={entity.avatar?.thumbnail} />;
+      },
     },
     {
-      title: 'phone',
-      dataIndex: 'callNo',
-      sorter: true,
-      hideInForm: true,
-      renderText: (val: string) => `${val}`,
+      title: 'introduction',
+      dataIndex: 'introduction',
+    },
+    {
+      title: 'birthday',
+      dataIndex: 'birthday',
+      valueType: 'dateTime',
+    },
+    {
+      title: 'age',
+      dataIndex: 'age',
+      renderText: (val: string) => `${val} tuổi`,
+    },
+    {
+      title: 'gender',
+      dataIndex: 'gender',
+    },
+    {
+      title: 'Phone',
+      dataIndex: 'phoneNumber',
+    },
+    {
+      title: 'Job',
+      dataIndex: 'job',
+    },
+    {
+      title: 'Height',
+      dataIndex: 'height',
+      renderText: (val: string) => `${val} cm`,
+    },
+    {
+      title: 'Address',
+      dataIndex: 'address',
+    },
+    {
+      title: 'Gender Prefer',
+      dataIndex: 'genderPrefer',
+      valueType: 'code',
+      renderText: (_dom, entity) => {
+        let text = '';
+        entity.genderPrefer.forEach((gender) => {
+          text += `${gender}\n`;
+        });
+        return text;
+      },
+    },
+    {
+      title: 'Max Age Prefer',
+      dataIndex: 'maxAgePrefer',
+    },
+    {
+      title: 'Min Age Prefer',
+      dataIndex: 'minAgePrefer',
+    },
+    {
+      title: 'Last Online',
+      dataIndex: 'lastOnline',
+      valueType: 'dateTime',
     },
     {
       title: 'Status',
       dataIndex: 'status',
-      hideInForm: true,
-      valueEnum: {
-        0: { text: 'Close', status: 'Default' },
-        1: { text: 'Running', status: 'Processing' },
-        2: { text: 'Online', status: 'Success' },
-        3: { text: 'Exception', status: 'Error' },
-      },
+    },
+    {
+      title: 'Status Updated At',
+      dataIndex: 'statusUpdatedAt',
+      valueType: 'dateTime',
     },
     {
       title: 'Created At',
-      dataIndex: 'updatedAt',
-      sorter: true,
+      dataIndex: 'createdAt',
       valueType: 'dateTime',
-      hideInForm: true,
-      renderFormItem: (item, { defaultRender, ...rest }, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="Please enter the reason for the exception!" />;
-        }
-        return defaultRender(item);
+    },
+    {
+      title: 'Updated At',
+      dataIndex: 'updatedAt',
+      valueType: 'dateTime',
+    },
+    {
+      title: 'Deleted At',
+      dataIndex: 'deletedAt',
+      valueType: 'dateTime',
+    },
+    {
+      title: 'Hobbies',
+      dataIndex: 'hobbies',
+      valueType: 'code',
+      renderText: (_dom, entity) => {
+        let text = '';
+        entity.hobbies.forEach((hobby) => {
+          text += `${hobby.value}\n`;
+        });
+        return text;
+      },
+    },
+    {
+      title: 'Images',
+      dataIndex: 'userImages',
+      render: (_, entity) => {
+        return (
+          <Space>
+            {entity.userImages.map((userImage) => {
+              return <Image width={64} height={64} src={userImage.image.url} />;
+            })}
+          </Space>
+        );
       },
     },
     {
       title: 'Operation',
-      dataIndex: 'option',
       valueType: 'option',
       render: () => (
         <>
@@ -121,29 +266,81 @@ const UserTableList: React.FC<{}> = () => {
     },
   ];
 
+  const queryListUser = async (
+    params: any & {
+      pageSize?: number;
+      current?: number;
+      keyword?: string;
+    },
+    sort: {
+      [key: string]: SortOrder;
+    },
+    filter: {
+      [key: string]: React.ReactText[];
+    },
+  ) => {
+    console.log(params, sort, filter);
+    const res = await UserService.getListUser(params, sort);
+    return res;
+  };
+
+  const renderStatusOnline = (status?: OnlineStatus) => {
+    if (status) {
+      if (status === OnlineStatus.online) {
+        return (
+          <Tooltip title="online">
+            <Badge color="green" />
+          </Tooltip>
+        );
+      }
+      if (status === OnlineStatus.away) {
+        return (
+          <Tooltip title="away">
+            <Badge color="orange" />{' '}
+          </Tooltip>
+        );
+      }
+    }
+    return (
+      <Tooltip title="offline">
+        <Badge color="red" />
+      </Tooltip>
+    );
+  };
+
+  const renderTitle = (user: UserTableListItem) => {
+    return (
+      <div>
+        <Title>{user.nickName}</Title>
+        <span>Online: {renderStatusOnline(user.onlineStatus)}</span>
+      </div>
+    );
+  };
+
   return (
     <PageContainer>
       <ProTable<UserTableListItem>
         headerTitle="List Users"
         actionRef={actionRef}
-        rowKey="key"
+        rowKey="id"
         search={{
           labelWidth: 120,
         }}
-        // request={(params, sorter, filter) => queryRule({ ...params, sorter, filter })}
+        request={(params, sort, filter) => queryListUser(params, sort, filter)}
         columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-        }}
+
+        // rowSelection={{
+        //   onChange: (_, selectedRows) => setSelectedRows(selectedRows),
+        // }}
       />
-      {selectedRowsState?.length > 0 && (
+      {/* {selectedRowsState?.length > 0 && (
         <FooterToolbar
           extra={
             <div>
               chosen <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> item&nbsp;&nbsp;
               <span>
-                Total number of service calls{' '}
-                {selectedRowsState.reduce((pre, item) => pre + item.phone, 0)} 万
+                Total number of service calls
+                {selectedRowsState.reduce((pre, item) => pre + item.data.phoneNumber, 0)}
               </span>
             </div>
           }
@@ -159,26 +356,26 @@ const UserTableList: React.FC<{}> = () => {
           </Button>
           <Button type="primary">Batch approval</Button>
         </FooterToolbar>
-      )}
+      )} */}
       <Drawer
-        width={600}
+        width={1000}
         visible={!!row}
         onClose={() => {
           setRow(undefined);
         }}
         closable={false}
       >
-        {row?.nickName && (
+        {row && (
           <ProDescriptions<UserTableListItem>
             column={2}
-            title={row?.nickName}
+            title={renderTitle(row)}
             request={async () => ({
               data: row || {},
             })}
             params={{
-              id: row?.nickName,
+              id: row?.id,
             }}
-            columns={columns}
+            columns={columnsDescription}
           />
         )}
       </Drawer>

@@ -1,12 +1,10 @@
-import {Button, Col, Input, Row, Form, message} from'antd';
-import React, {useState, useCallback, useEffect} from'react';
-
-import omit from'omit.js';
-import {FormItemProps} from'antd/es/form/FormItem';
-import ItemMap from'./map';
-import LoginContext, {LoginContextProps} from'./LoginContext';
-import styles from'./index.less';
-import {getFakeCaptcha} from'../../service';
+import { Button, Col, Form, Input, message, Row } from 'antd';
+import { FormItemProps } from 'antd/es/form/FormItem';
+import omit from 'omit.js';
+import React, { useCallback, useEffect, useState } from 'react';
+import styles from './index.less';
+import LoginContext, { LoginContextProps } from './LoginContext';
+import ItemMap from './map';
 
 export type WrappedLoginItemProps = LoginItemProps;
 export type LoginItemKeyType = keyof typeof ItemMap;
@@ -28,7 +26,7 @@ export interface LoginItemProps extends Partial<FormItemProps> {
   updateActive?: LoginContextProps['updateActive'];
   type?: string;
   defaultValue?: string;
-  customProps?: {[key: string]: unknown };
+  customProps?: { [key: string]: unknown };
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   tabUtil?: LoginContextProps['tabUtil'];
 }
@@ -75,18 +73,19 @@ const LoginItem: React.FC<LoginItemProps> = (props) => {
     ...restProps
   } = props;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onGetCaptcha = useCallback(async (mobile: string) => {
-    const result = await getFakeCaptcha(mobile);
-    if (result === false) {
-      return;
-    }
+    // const result = true;
+    // // if (result === false) {
+    // //   return;
+    // // }
     message.success('Get the verification code successfully! The verification code is: 1234');
     setTiming(true);
   }, []);
 
   useEffect(() => {
     let interval: number = 0;
-    const {countDown} = props;
+    const { countDown } = props;
     if (timing) {
       interval = window.setInterval(() => {
         setCount((preSecond) => {
@@ -96,7 +95,7 @@ const LoginItem: React.FC<LoginItemProps> = (props) => {
             // reset seconds
             return countDown || 60;
           }
-          return preSecond-1;
+          return preSecond - 1;
         });
       }, 1000);
     }
@@ -109,8 +108,8 @@ const LoginItem: React.FC<LoginItemProps> = (props) => {
   const options = getFormItemOptions(props);
   const otherProps = restProps || {};
 
-  if (type ==='Captcha') {
-    const inputProps = omit(otherProps, ['onGetCaptcha','countDown']);
+  if (type === 'Captcha') {
+    const inputProps = omit(otherProps, ['onGetCaptcha', 'countDown']);
 
     return (
       <FormItem shouldUpdate>
@@ -131,7 +130,7 @@ const LoginItem: React.FC<LoginItemProps> = (props) => {
                   onGetCaptcha(value);
                 }}
               >
-                {timing? `${count} seconds`:'Get verification code'}
+                {timing ? `${count} seconds` : 'Get verification code'}
               </Button>
             </Col>
           </Row>

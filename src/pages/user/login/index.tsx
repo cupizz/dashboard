@@ -1,18 +1,12 @@
-import { ACCESS_TOKEN } from '@/constant';
 import { Params } from '@/services/param';
-import { Responses } from '@/services/response';
 import { Alert, Checkbox, message } from 'antd';
 import React, { useState } from 'react';
-import { AuthenticationStateType, connect, Dispatch, history, useModel } from 'umi';
+import { history } from 'umi';
 import LoginFrom from './components/Login';
+import { useLogin } from './hook/useLogin';
 import styles from './style.less';
 
 const { UserName, Password, Submit } = LoginFrom;
-interface LoginProps {
-  dispatch: Dispatch;
-  authentication: AuthenticationStateType;
-  submitting?: boolean;
-}
 
 const LoginMessage: React.FC<{
   content: string;
@@ -26,45 +20,41 @@ const LoginMessage: React.FC<{
     showIcon
   />
 );
-const saveToken = (accessToken: string) => {
-  localStorage.setItem(ACCESS_TOKEN, accessToken);
-};
-const Login: React.FC<LoginProps> = (props) => {
-  const { authentication = {}, submitting } = props;
-  const { status, type: loginType } = authentication;
+
+const Login: React.FC<{}> = () => {
   const [autoLogin, setAutoLogin] = useState(true);
   const [type, setType] = useState<string>('account');
+  const [status, setStatus] = useState<string>('ready');
+  const [loginMessage, SetLoginMessage] = useState<string | undefined>(undefined);
 
-  const { refresh } = useModel('@@initialState');
+  const {
+    methods: { handleLoginAccount },
+    loading: { submitting },
+  } = useLogin();
 
   const handleSubmit = (values: Params.LoginInput) => {
-    const { dispatch } = props;
-    dispatch({
-      type: 'authentication/login',
-      payload: {
-        ...values,
-      },
-    }).then((response: any) => {
-      // eslint-disable-next-line no-console
-      console.log(response);
-
-      if (response) {
-        const data = response.data as Responses.LoginOutput;
-        saveToken(data.login.token);
-        refresh();
-
-        message.success('Login successfully!');
-
-        history.replace('/');
-      }
-    });
+    handleLoginAccount(values)
+      .then((response: any) => {
+        if (response) {
+          message.success('Login successfully!');
+          history.replace('/');
+        }
+      })
+      .catch((error: any) => {
+        setStatus('error');
+        if (error && error.errors) {
+          SetLoginMessage(error.errors.message);
+        } else {
+          SetLoginMessage('Account or password error (cuppizz.fc)');
+        }
+      });
   };
   return (
     <div className={styles.main}>
       <LoginFrom activeKey={type} onTabChange={setType} onSubmit={handleSubmit}>
         <>
-          {status === 'error' && loginType === 'account' && !submitting && (
-            <LoginMessage content="Account or password error (admin/ant.design)" />
+          {status === 'error' && loginMessage && !submitting && (
+            <LoginMessage content={loginMessage} />
           )}
 
           <UserName
@@ -85,6 +75,10 @@ const Login: React.FC<LoginProps> = (props) => {
               {
                 required: true,
                 message: 'Please enter your password! ',
+              },
+              {
+                min: 8,
+                message: 'Password at least 8 characters! ',
               },
             ]}
           />
@@ -108,19 +102,4 @@ const Login: React.FC<LoginProps> = (props) => {
   );
 };
 
-export default connect(
-  ({
-    authentication,
-    loading,
-  }: {
-    authentication: AuthenticationStateType;
-    loading: {
-      effects: {
-        [key: string]: boolean;
-      };
-    };
-  }) => ({
-    authentication,
-    submitting: loading.effects['authentication/login'],
-  }),
-)(Login);
+export default Login;

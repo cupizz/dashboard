@@ -1,9 +1,6 @@
-import GraphQLClient from '@/utils/GraphQLClient';
-import { ApolloProvider } from '@apollo/client';
 import React from 'react';
+import BaseLayout from './BaseLayout';
 
-const Layout: React.FC = ({ children }) => (
-  <ApolloProvider client={GraphQLClient}>{children}</ApolloProvider>
-);
+const Layout: React.FC = ({ children }) => <BaseLayout>{children}</BaseLayout>;
 
 export default Layout;

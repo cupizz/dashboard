@@ -1,13 +1,13 @@
-import React, {Component} from'react';
-import {connect, ConnectProps} from'umi';
-import {Tag, message} from'antd';
-import groupBy from'lodash/groupBy';
-import moment from'moment';
-import {NoticeItem} from'@/models/global';
-import {CurrentUser} from'@/models/user';
-import {ConnectState} from'@/models/connect';
-import NoticeIcon from'../NoticeIcon';
-import styles from'./index.less';
+import React, { Component } from 'react';
+import { connect, ConnectProps } from 'umi';
+import { Tag, message } from 'antd';
+import groupBy from 'lodash/groupBy';
+import moment from 'moment';
+import { NoticeItem } from '@/models/global';
+import { CurrentUser } from '@/models/user';
+import { ConnectState } from '@/models/connect';
+import NoticeIcon from '../NoticeIcon';
+import styles from './index.less';
 
 export interface GlobalHeaderRightProps extends Partial<ConnectProps> {
   notices?: NoticeItem[];
@@ -19,34 +19,34 @@ export interface GlobalHeaderRightProps extends Partial<ConnectProps> {
 
 class GlobalHeaderRight extends Component<GlobalHeaderRightProps> {
   componentDidMount() {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
 
     if (dispatch) {
       dispatch({
-        type:'global/fetchNotices',
+        type: 'global/fetchNotices',
       });
     }
   }
 
   changeReadState = (clickedItem: NoticeItem): void => {
-    const {id} = clickedItem;
-    const {dispatch} = this.props;
+    const { id } = clickedItem;
+    const { dispatch } = this.props;
 
     if (dispatch) {
       dispatch({
-        type:'global/changeNoticeReadState',
+        type: 'global/changeNoticeReadState',
         payload: id,
       });
     }
   };
 
   handleNoticeClear = (title: string, key: string) => {
-    const {dispatch} = this.props;
+    const { dispatch } = this.props;
     message.success(`${'Emptyed out'} ${title}`);
 
     if (dispatch) {
       dispatch({
-        type:'global/clearNotices',
+        type: 'global/clearNotices',
         payload: key,
       });
     }
@@ -55,14 +55,14 @@ class GlobalHeaderRight extends Component<GlobalHeaderRightProps> {
   getNoticeData = (): {
     [key: string]: NoticeItem[];
   } => {
-    const {notices = []} = this.props;
+    const { notices = [] } = this.props;
 
     if (!notices || notices.length === 0 || !Array.isArray(notices)) {
       return {};
     }
 
     const newNotices = notices.map((notice) => {
-      const newNotice = {...notice };
+      const newNotice = { ...notice };
 
       if (newNotice.datetime) {
         newNotice.datetime = moment(notice.datetime as string).fromNow();
@@ -74,10 +74,10 @@ class GlobalHeaderRight extends Component<GlobalHeaderRightProps> {
 
       if (newNotice.extra && newNotice.status) {
         const color = {
-          todo:'',
-          processing:'blue',
-          urgent:'red',
-          doing:'gold',
+          todo: '',
+          processing: 'blue',
+          urgent: 'red',
+          doing: 'gold',
         }[newNotice.status];
         newNotice.extra = (
           <Tag
@@ -93,10 +93,10 @@ class GlobalHeaderRight extends Component<GlobalHeaderRightProps> {
 
       return newNotice;
     });
-    return groupBy(newNotices,'type');
+    return groupBy(newNotices, 'type');
   };
 
-  getUnreadData = (noticeData: {[key: string]: NoticeItem[] }) => {
+  getUnreadData = (noticeData: { [key: string]: NoticeItem[] }) => {
     const unreadMsg: {
       [key: string]: number;
     } = {};
@@ -115,7 +115,7 @@ class GlobalHeaderRight extends Component<GlobalHeaderRightProps> {
   };
 
   render() {
-    const {currentUser, fetchingNotices, onNoticeVisibleChange} = this.props;
+    const { currentUser, fetchingNotices, onNoticeVisibleChange } = this.props;
     const noticeData = this.getNoticeData();
     const unreadMsg = this.getUnreadData(noticeData);
     return (

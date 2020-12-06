@@ -1,13 +1,13 @@
-import React, {useEffect} from'react';
-import {TabPaneProps} from'antd/es/tabs';
-import {Tabs} from'antd';
-import LoginContext, {LoginContextProps} from'./LoginContext';
+import React, { useEffect } from 'react';
+import { TabPaneProps } from 'antd/es/tabs';
+import { Tabs } from 'antd';
+import LoginContext, { LoginContextProps } from './LoginContext';
 
-const {TabPane} = Tabs;
+const { TabPane } = Tabs;
 
 const generateId = (() => {
   let i = 0;
-  return (prefix ='') => {
+  return (prefix = '') => {
     i += 1;
     return `${prefix}${i}`;
   };
@@ -21,13 +21,13 @@ interface LoginTabProps extends TabPaneProps {
 const LoginTab: React.FC<LoginTabProps> = (props) => {
   useEffect(() => {
     const uniqueId = generateId('login-tab-');
-    const {tabUtil} = props;
+    const { tabUtil } = props;
     if (tabUtil) {
       tabUtil.addTab(uniqueId);
     }
   }, []);
 
-  const {children} = props;
+  const { children } = props;
   return <TabPane {...props}>{props.active && children}</TabPane>;
 };
 
@@ -40,6 +40,6 @@ const WrapContext: React.FC<TabPaneProps> & {
 );
 
 // The flag is used to determine whether it is a custom component
-WrapContext.typeName ='LoginTab';
+WrapContext.typeName = 'LoginTab';
 
 export default WrapContext;

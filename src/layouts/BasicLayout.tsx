@@ -6,7 +6,6 @@
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { ConnectState } from '@/models/connect';
 import Authorized from '@/utils/Authorized';
-import GraphQLClient from '@/utils/GraphQLClient';
 import { GithubOutlined } from '@ant-design/icons';
 import ProLayout, {
   BasicLayoutProps as ProLayoutProps,
@@ -15,12 +14,12 @@ import ProLayout, {
   SettingDrawer,
   Settings,
 } from '@ant-design/pro-layout';
-import { ApolloProvider } from '@apollo/client';
 import { getMatchMenu } from '@umijs/route-utils';
 import { Button, Result } from 'antd';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { connect, Dispatch, history, Link, useIntl } from 'umi';
 import logo from '../assets/logo.svg';
+import BaseLayout from './BaseLayout';
 
 const noMatch = (
   <Result
@@ -127,7 +126,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
   );
   const { formatMessage } = useIntl();
   return (
-    <ApolloProvider client={GraphQLClient}>
+    <BaseLayout>
       <ProLayout
         logo={logo}
         formatMessage={formatMessage}
@@ -180,7 +179,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
           })
         }
       />
-    </ApolloProvider>
+    </BaseLayout>
   );
 };
 

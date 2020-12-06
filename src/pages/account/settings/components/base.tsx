@@ -1,12 +1,11 @@
 import { UploadOutlined } from '@ant-design/icons';
-import { Button, Input, Select, Upload, Form, message } from 'antd';
-import { connect, FormattedMessage, formatMessage } from 'umi';
-import React, { Component } from 'react';
-
+import { Button, Form, Input, message, Select, Upload } from 'antd';
+import React from 'react';
+import { connect, FormattedMessage, useIntl } from 'umi';
 import { CurrentUser } from '../data.d';
+import styles from './BaseView.less';
 import GeographicView from './GeographicView';
 import PhoneView from './PhoneView';
-import styles from './BaseView.less';
 
 const { Option } = Select;
 
@@ -70,11 +69,10 @@ interface BaseViewProps {
   currentUser?: CurrentUser;
 }
 
-class BaseView extends Component<BaseViewProps> {
-  view: HTMLDivElement | undefined = undefined;
+const BaseView: React.FC<BaseViewProps> = ({ currentUser }) => {
+  const { formatMessage } = useIntl();
 
-  getAvatarURL() {
-    const { currentUser } = this.props;
+  const getAvatarURL = () => {
     if (currentUser) {
       if (currentUser.avatar) {
         return currentUser.avatar;
@@ -83,138 +81,130 @@ class BaseView extends Component<BaseViewProps> {
       return url;
     }
     return '';
-  }
-
-  getViewDom = (ref: HTMLDivElement) => {
-    this.view = ref;
   };
 
-  handleFinish = () => {
+  const handleFinish = () => {
     message.success(formatMessage({ id: 'accountandsettings.basic.update.success' }));
   };
 
-  render() {
-    const { currentUser } = this.props;
-
-    return (
-      <div className={styles.baseView} ref={this.getViewDom}>
-        <div className={styles.left}>
-          <Form
-            layout="vertical"
-            onFinish={this.handleFinish}
-            initialValues={currentUser}
-            hideRequiredMark
+  return (
+    <div className={styles.baseView}>
+      <div className={styles.left}>
+        <Form
+          layout="vertical"
+          onFinish={handleFinish}
+          initialValues={currentUser}
+          hideRequiredMark
+        >
+          <Form.Item
+            name="email"
+            label={formatMessage({ id: 'accountandsettings.basic.email' })}
+            rules={[
+              {
+                required: true,
+                message: formatMessage({ id: 'accountandsettings.basic.email-message' }, {}),
+              },
+            ]}
           >
-            <Form.Item
-              name="email"
-              label={formatMessage({ id: 'accountandsettings.basic.email' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'accountandsettings.basic.email-message' }, {}),
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="name"
-              label={formatMessage({ id: 'accountandsettings.basic.nickname' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'accountandsettings.basic.nickname-message' }, {}),
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="profile"
-              label={formatMessage({ id: 'accountandsettings.basic.profile' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'accountandsettings.basic.profile-message' }, {}),
-                },
-              ]}
-            >
-              <Input.TextArea
-                placeholder={formatMessage({ id: 'accountandsettings.basic.profile-placeholder' })}
-                rows={4}
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="name"
+            label={formatMessage({ id: 'accountandsettings.basic.nickname' })}
+            rules={[
+              {
+                required: true,
+                message: formatMessage({ id: 'accountandsettings.basic.nickname-message' }, {}),
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="profile"
+            label={formatMessage({ id: 'accountandsettings.basic.profile' })}
+            rules={[
+              {
+                required: true,
+                message: formatMessage({ id: 'accountandsettings.basic.profile-message' }, {}),
+              },
+            ]}
+          >
+            <Input.TextArea
+              placeholder={formatMessage({ id: 'accountandsettings.basic.profile-placeholder' })}
+              rows={4}
+            />
+          </Form.Item>
+          <Form.Item
+            name="country"
+            label={formatMessage({ id: 'accountandsettings.basic.country' })}
+            rules={[
+              {
+                required: true,
+                message: formatMessage({ id: 'accountandsettings.basic.country-message' }, {}),
+              },
+            ]}
+          >
+            <Select style={{ maxWidth: 220 }}>
+              <Option value="China">中国</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            name="geographic"
+            label={formatMessage({ id: 'accountandsettings.basic.geographic' })}
+            rules={[
+              {
+                required: true,
+                message: formatMessage({ id: 'accountandsettings.basic.geographic-message' }, {}),
+              },
+              {
+                validator: validatorGeographic,
+              },
+            ]}
+          >
+            <GeographicView />
+          </Form.Item>
+          <Form.Item
+            name="address"
+            label={formatMessage({ id: 'accountandsettings.basic.address' })}
+            rules={[
+              {
+                required: true,
+                message: formatMessage({ id: 'accountandsettings.basic.address-message' }, {}),
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="phone"
+            label={formatMessage({ id: 'accountandsettings.basic.phone' })}
+            rules={[
+              {
+                required: true,
+                message: formatMessage({ id: 'accountandsettings.basic.phone-message' }, {}),
+              },
+              { validator: validatorPhone },
+            ]}
+          >
+            <PhoneView />
+          </Form.Item>
+          <Form.Item>
+            <Button htmlType="submit" type="primary">
+              <FormattedMessage
+                id="accountandsettings.basic.update"
+                defaultMessage="Update Information"
               />
-            </Form.Item>
-            <Form.Item
-              name="country"
-              label={formatMessage({ id: 'accountandsettings.basic.country' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'accountandsettings.basic.country-message' }, {}),
-                },
-              ]}
-            >
-              <Select style={{ maxWidth: 220 }}>
-                <Option value="China">中国</Option>
-              </Select>
-            </Form.Item>
-            <Form.Item
-              name="geographic"
-              label={formatMessage({ id: 'accountandsettings.basic.geographic' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'accountandsettings.basic.geographic-message' }, {}),
-                },
-                {
-                  validator: validatorGeographic,
-                },
-              ]}
-            >
-              <GeographicView />
-            </Form.Item>
-            <Form.Item
-              name="address"
-              label={formatMessage({ id: 'accountandsettings.basic.address' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'accountandsettings.basic.address-message' }, {}),
-                },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="phone"
-              label={formatMessage({ id: 'accountandsettings.basic.phone' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'accountandsettings.basic.phone-message' }, {}),
-                },
-                { validator: validatorPhone },
-              ]}
-            >
-              <PhoneView />
-            </Form.Item>
-            <Form.Item>
-              <Button htmlType="submit" type="primary">
-                <FormattedMessage
-                  id="accountandsettings.basic.update"
-                  defaultMessage="Update Information"
-                />
-              </Button>
-            </Form.Item>
-          </Form>
-        </div>
-        <div className={styles.right}>
-          <AvatarView avatar={this.getAvatarURL()} />
-        </div>
+            </Button>
+          </Form.Item>
+        </Form>
       </div>
-    );
-  }
-}
+      <div className={styles.right}>
+        <AvatarView avatar={getAvatarURL()} />
+      </div>
+    </div>
+  );
+};
 
 export default connect(
   ({ accountAndsettings }: { accountAndsettings: { currentUser: CurrentUser } }) => ({

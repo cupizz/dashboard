@@ -1,8 +1,8 @@
 import { InfoCircleOutlined } from '@ant-design/icons';
-import { Button, Card, DatePicker, Input, Form, InputNumber, Radio, Select, Tooltip } from 'antd';
-import { connect, Dispatch, FormattedMessage, formatMessage } from 'umi';
-import React, { FC } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
+import { Button, Card, DatePicker, Form, Input, InputNumber, Radio, Select, Tooltip } from 'antd';
+import React, { FC } from 'react';
+import { connect, Dispatch, FormattedMessage, useIntl } from 'umi';
 import styles from './style.less';
 
 const FormItem = Form.Item;
@@ -12,13 +12,14 @@ const { TextArea } = Input;
 
 interface BasicFormProps {
   submitting: boolean;
-  dispatch: Dispatch<any>;
+  dispatch: Dispatch;
 }
 
 const BasicForm: FC<BasicFormProps> = (props) => {
   const { submitting } = props;
   const [form] = Form.useForm();
   const [showPublicUsers, setShowPublicUsers] = React.useState(false);
+  const { formatMessage } = useIntl();
   const formItemLayout = {
     labelCol: {
       xs: { span: 24 },
