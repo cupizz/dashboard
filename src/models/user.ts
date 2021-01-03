@@ -1,6 +1,6 @@
-import { query as queryUsers } from '@/services/user';
+
+import { UserService } from '@/services';
 import { Effect, Reducer } from 'umi';
-import { UserService } from '../services/UserService';
 
 export type MediaFile = {
   id: string;
@@ -32,12 +32,10 @@ export interface UserModelType {
   namespace: 'user';
   state: UserModelState;
   effects: {
-    fetch: Effect;
     fetchCurrent: Effect;
   };
   reducers: {
     saveCurrentUser: Reducer<UserModelState>;
-    // changeNotifyCount: Reducer<UserModelState>;
   };
 }
 
@@ -49,13 +47,6 @@ const UserModel: UserModelType = {
   },
 
   effects: {
-    *fetch(_, { call, put }) {
-      const response = yield call(queryUsers);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-    },
     *fetchCurrent(_, { call, put }) {
       const response = yield call(UserService.getCurrentUser);
       yield put({
@@ -72,19 +63,6 @@ const UserModel: UserModelType = {
         currentUser: action.payload.data.me || {},
       };
     },
-    // changeNotifyCount(
-    //   state,
-    //   action,
-    // ) {
-    //   return {
-    //     ...state,
-    //     currentUser: {
-    //       ...state?.currentUser,
-    //       notifyCount: action.payload.totalCount,
-    //       unreadCount: action.payload.unreadCount,
-    //     },
-    //   };
-    // },
   },
 };
 

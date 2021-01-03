@@ -50,4 +50,10 @@ export default {
   'menu.editor.mind': 'Mind Editor',
   'menu.editor.koni': 'Koni Editor',
   'menu.users': 'Users',
+  'menu.notification': 'Notification',
+  'menu.setting': 'Setting',
+  'menu.setting.config': 'App Config',
+  'menu.setting.hobby': 'Hobby',
+  'menu.setting.question': 'Question',
+  'menu.setting.qna': 'QNA',
 };

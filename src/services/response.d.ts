@@ -119,4 +119,51 @@ export namespace Responses {
     id: string;
     type: string;
   }
+
+  export interface UserCount{
+    data: {
+      userCount: number;
+    }
+  }
+  export interface HobbyListItem {
+    hobbies: HobbyItem[]
+  }
+
+  export interface HobbyItem {
+    id: string
+    value: string
+    isValid: boolean
+  }
+
+  export interface QuestionListItem {
+    adminQuestions: QuestionItem[]
+  }
+
+  export interface QuestionItem{
+    id: string;
+    content: string;
+    color: string;
+    textColor: string;
+    gradient: string[];
+  }
+
+  export interface QNAListItem {
+    qnAs: QNAItem[];
+  }
+
+  export interface QNAItem{
+    id: string;
+    question: string;
+    answer: string;
+  }
+
+  export interface AppConfigItem {
+    data: any,
+    description: string,
+    id: string,
+    name: string,
+  }
+  export interface AppConfigListItem {
+    appConfigs: AppConfigItem[]
+  }
 }

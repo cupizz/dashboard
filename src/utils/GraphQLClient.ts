@@ -23,7 +23,10 @@ const authLink = setContext((_, { headers }) => {
 
 const GraphQLClient = new ApolloClient({
   link: authLink.concat(httpLink),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    addTypename: false,
+    resultCaching: false
+  }),
 });
 
 export default GraphQLClient;

@@ -80,6 +80,47 @@ export default [
             component: './users',
           },
           {
+            name: 'notification',
+            icon: 'notification',
+            path: '/notification',
+            component: './notification',
+          },
+          {
+            path: '/setting',
+            icon: 'setting',
+            name: 'setting',
+            routes: [
+              {
+                path: '/',
+                redirect: '/setting/hobby',
+              },
+              {
+                name: 'config',
+                icon: 'heart',
+                path: '/setting/config',
+                component: './setting/config',
+              },
+              {
+                name: 'hobby',
+                icon: 'heart',
+                path: '/setting/hobby',
+                component: './setting/hobby',
+              },
+              {
+                name: 'question',
+                icon: 'smile',
+                path: '/setting/question',
+                component: './setting/question',
+              },
+              {
+                name: 'qna',
+                icon: 'smile',
+                path: '/setting/qna',
+                component: './setting/qna',
+              },
+            ],
+          },
+          {
             path: '/form',
             icon: 'form',
             name: 'form',

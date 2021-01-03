@@ -26,7 +26,7 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
 
       if (dispatch) {
         dispatch({
-          type: 'login/logout',
+          type: 'authentication/logout',
         });
       }
 

@@ -145,6 +145,7 @@ export class UserService {
         orderBy: orderBy ? [orderBy] : [],
         where: where || undefined,
       },
+      fetchPolicy: "no-cache",
     });
     const responseData: Responses.User[] = response.data.users;
     const data: any[] = responseData.map((user) => {
@@ -247,6 +248,22 @@ export class UserService {
     return GraphQLClient.mutate({
       mutation: UPDATE_USER_STATUS,
       variables: { id: payload.id, status: payload.status },
+    });
+  }
+
+  /**
+   * @summary count user online
+   * @result UserCount A JSON of object user count
+   * @throws ResponseError
+   */
+  public static async getUserOnline(): Promise<FetchResult<Responses.UserCount>> {
+    const UPDATE_USER_STATUS = gql`
+      query getUserOnline() {
+        userCount(where: { onlineStatus: { equals: online } })
+      }
+    `;
+    return GraphQLClient.query({
+      query: UPDATE_USER_STATUS,
     });
   }
 }

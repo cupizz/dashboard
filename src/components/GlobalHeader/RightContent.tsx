@@ -49,9 +49,7 @@ const GlobalHeaderRight: React.SFC<GlobalHeaderRightProps> = (props) => {
             label: <a href="https://prolayout.ant.design/">Pro Layout</a>,
             value: 'Pro Layout',
           },
-        ]} // onSearch={value => {
-        // //console.log('input', value);
-        // })
+        ]}
       />
       <Tooltip title="Use Document">
         <a
