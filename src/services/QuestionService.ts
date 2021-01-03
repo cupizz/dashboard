@@ -23,7 +23,7 @@ export class QuestionService {
     `;
     return GraphQLClient.query({
       query,
-      fetchPolicy: "no-cache"
+      fetchPolicy: 'no-cache',
     });
   }
 

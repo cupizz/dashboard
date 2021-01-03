@@ -1,13 +1,13 @@
-import { message } from "antd";
+import { message } from 'antd';
 
-type ImageCallback = (result:  string | ArrayBuffer | null) => void;
+type ImageCallback = (result: string | ArrayBuffer | null) => void;
 
 export function getBase64(img: Blob, callback: ImageCallback): void {
   const reader = new FileReader();
   reader.addEventListener('load', () => {
     console.log(reader);
 
-    callback(reader.result)
+    callback(reader.result);
   });
   reader.readAsDataURL(img);
 }

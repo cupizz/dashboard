@@ -90,7 +90,6 @@ const QNA = () => {
 
   console.log(qnaItem);
 
-
   const handleDelete = (item: Responses.QNAItem) => {
     Modal.confirm({
       title: 'Confirm',
@@ -155,9 +154,7 @@ const QNA = () => {
             title="Answer"
             dataIndex="answer"
             key="answer"
-            render={(value: string)=>(
-              renderHTML(value)
-            )}
+            render={(value: string) => renderHTML(value)}
           />
           <Column
             title="Action"
@@ -191,11 +188,7 @@ const QNA = () => {
         onCancel={handleCancel}
         width={1000}
       >
-        <Form
-          onFinish={handleSubmit}
-          form={form}
-          layout="vertical"
-        >
+        <Form onFinish={handleSubmit} form={form} layout="vertical">
           <Form.Item
             name="question"
             label="Question"
@@ -204,10 +197,7 @@ const QNA = () => {
           >
             <TextArea rows={4} placeholder="Question" />
           </Form.Item>
-          <Form.Item
-            label="Answer"
-            tooltip={{ title: 'Answer', icon: <InfoCircleOutlined /> }}
-          >
+          <Form.Item label="Answer" tooltip={{ title: 'Answer', icon: <InfoCircleOutlined /> }}>
             <ReactQuill value={answer} onChange={setAnswer} />
           </Form.Item>
         </Form>

@@ -12,7 +12,7 @@ import ProLayout, {
   DefaultFooter,
   MenuDataItem,
   SettingDrawer,
-  Settings
+  Settings,
 } from '@ant-design/pro-layout';
 import { getMatchMenu } from '@umijs/route-utils';
 import { Button, Result } from 'antd';

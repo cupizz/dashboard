@@ -2,7 +2,6 @@ import { NoticeIconData } from '@/components/NoticeIcon';
 import { Effect, Reducer } from 'umi';
 import { ConnectState } from './connect.d';
 
-
 export interface NoticeItem extends NoticeIconData {
   id: string;
   type: string;

@@ -1,6 +1,5 @@
 export default {
-  'pages.layouts.userLayout.title':
-    'Cupizz Team',
+  'pages.layouts.userLayout.title': 'Cupizz Team',
   'pages.login.accountLogin.tab': 'Account Login',
   'pages.login.accountLogin.errorMessage': 'Incorrect username/password',
   'pages.login.username.placeholder': 'Username: admin or user',

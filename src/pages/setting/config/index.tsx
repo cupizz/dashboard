@@ -57,11 +57,7 @@ const Config = () => {
             dataIndex="description"
             key="description"
           />
-          <Column
-            title="Value"
-            dataIndex="data"
-            key="data"
-          />
+          <Column title="Value" dataIndex="data" key="data" />
         </Table>
       ) : null}
     </PageContainer>

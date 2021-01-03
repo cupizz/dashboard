@@ -9,11 +9,14 @@ export class NotificationService {
    * @result SuccessResponse successfully
    * @throws ResponseError
    */
-  public static async postNotification(
-    input: Params.NotificationInput,
-  ): Promise<FetchResult<any>> {
+  public static async postNotification(input: Params.NotificationInput): Promise<FetchResult<any>> {
     const mutation = gql`
-      mutation adminSendNotification($title: String!, $subtitle: String, $content: String!, $image: Upload) {
+      mutation adminSendNotification(
+        $title: String!
+        $subtitle: String
+        $content: String!
+        $image: Upload
+      ) {
         adminSendNotification(
           userIds: []
           title: $title

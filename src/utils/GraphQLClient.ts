@@ -25,7 +25,7 @@ const GraphQLClient = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache({
     addTypename: false,
-    resultCaching: false
+    resultCaching: false,
   }),
 });
 

@@ -35,14 +35,15 @@ const Compose = () => {
     });
   };
   const uploadButton = (
-    <div
-      className={styles['wrapper-btn-upload']}
-    >
-      <div className={styles['btn-upload-image']}  onClick={() => {
-        if (inputEl) {
-          inputEl.current?.click();
-        }
-      }}>
+    <div className={styles['wrapper-btn-upload']}>
+      <div
+        className={styles['btn-upload-image']}
+        onClick={() => {
+          if (inputEl) {
+            inputEl.current?.click();
+          }
+        }}
+      >
         {loading ? <LoadingOutlined /> : <PlusOutlined />}
         <div style={{ marginTop: 8 }}>Upload</div>
       </div>
@@ -55,7 +56,7 @@ const Compose = () => {
     NotificationService.postNotification({
       ...values,
       image: imageFile,
-      content
+      content,
     })
       .then(() => {
         message.success('Thành công');

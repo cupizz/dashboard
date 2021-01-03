@@ -21,7 +21,7 @@ export class ConfigService {
     `;
     return GraphQLClient.query({
       query,
-      fetchPolicy: "no-cache"
+      fetchPolicy: 'no-cache',
     });
   }
 }

@@ -26,7 +26,7 @@ export class UserService {
     if (Object.keys(sort).length > 0) {
       const temp = {};
       Object.keys(sort).forEach((key) => {
-        temp[key] = sort[key] === 'ascend' ? 'asc' : 'dsc';
+        temp[key] = sort[key] === 'ascend' ? 'asc' : 'desc';
       });
       orderBy = temp;
     }
@@ -145,7 +145,7 @@ export class UserService {
         orderBy: orderBy ? [orderBy] : [],
         where: where || undefined,
       },
-      fetchPolicy: "no-cache",
+      fetchPolicy: 'no-cache',
     });
     const responseData: Responses.User[] = response.data.users;
     const data: any[] = responseData.map((user) => {

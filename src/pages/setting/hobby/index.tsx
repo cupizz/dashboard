@@ -25,7 +25,7 @@ const Hobby = () => {
   const handleUpdate = (item: Responses.HobbyItem) => {
     setHobbyItem(item);
     form.setFieldsValue({
-      ...item
+      ...item,
     });
     setIsModalVisible(true);
   };
@@ -128,64 +128,62 @@ const Hobby = () => {
         </Button>,
       ]}
     >
-      {listHobbies.length ? <Table rowKey="id" dataSource={listHobbies}>
-        <Column
-          sorter={(a: Responses.HobbyItem, b: Responses.HobbyItem) => a.id.length - b.id.length}
-          title="ID"
-          dataIndex="id"
-          key="id"
-        />
-        <Column
-          sorter={(a: Responses.HobbyItem, b: Responses.HobbyItem) =>
-            a.value.length - b.value.length
-          }
-          title="Value"
-          dataIndex="value"
-          key="value"
-        />
-        <Column
-          title="Is Valid"
-          dataIndex="isValid"
-          key="isValid"
-          render={(isValid: boolean) => {
-            return isValid ? 'True' : 'False';
-          }}
-        />
-        <Column
-          title="Action"
-          key="action"
-          render={(text: string, item: Responses.HobbyItem) => (
-            <Space size="middle">
-              <a
-                onClick={() => {
-                  handleUpdate(item);
-                }}
-              >
-                Update
-              </a>
-              /
-              <a
-                onClick={() => {
-                  handleDelete(item);
-                }}
-              >
-                Delete
-              </a>
-            </Space>
-          )}
-        />
-      </Table>: null}
+      {listHobbies.length ? (
+        <Table rowKey="id" dataSource={listHobbies}>
+          <Column
+            sorter={(a: Responses.HobbyItem, b: Responses.HobbyItem) => a.id.length - b.id.length}
+            title="ID"
+            dataIndex="id"
+            key="id"
+          />
+          <Column
+            sorter={(a: Responses.HobbyItem, b: Responses.HobbyItem) =>
+              a.value.length - b.value.length
+            }
+            title="Value"
+            dataIndex="value"
+            key="value"
+          />
+          <Column
+            title="Is Valid"
+            dataIndex="isValid"
+            key="isValid"
+            render={(isValid: boolean) => {
+              return isValid ? 'True' : 'False';
+            }}
+          />
+          <Column
+            title="Action"
+            key="action"
+            render={(text: string, item: Responses.HobbyItem) => (
+              <Space size="middle">
+                <a
+                  onClick={() => {
+                    handleUpdate(item);
+                  }}
+                >
+                  Update
+                </a>
+                /
+                <a
+                  onClick={() => {
+                    handleDelete(item);
+                  }}
+                >
+                  Delete
+                </a>
+              </Space>
+            )}
+          />
+        </Table>
+      ) : null}
       <Modal
         title={hobbyItem ? 'Update' : 'Add New'}
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        <Form
-          onFinish={handleSubmit}
-          form={form}
-          layout="vertical"
-        >
+        <Form onFinish={handleSubmit} form={form} layout="vertical">
           <Form.Item
             name="value"
             label="Value"

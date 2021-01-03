@@ -5,7 +5,7 @@ import Compose from './compose';
 const notification = () => {
   return (
     <PageContainer>
-       <Compose />
+      <Compose />
     </PageContainer>
   );
 };

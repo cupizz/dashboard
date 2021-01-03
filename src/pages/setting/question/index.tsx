@@ -98,7 +98,7 @@ const Question = () => {
   const handleUpdate = (item: Responses.QuestionItem) => {
     setQuestionItem(item);
     form.setFieldsValue({
-      ...item
+      ...item,
     });
     setColor(`#${item.color}`);
     setTextColor(`#${item.textColor}`);
@@ -228,127 +228,117 @@ const Question = () => {
         </Button>,
       ]}
     >
-      {listQuestions.length ? <Table rowKey="id" dataSource={listQuestions}>
-        <Column
-          sorter={(a: Responses.QuestionItem, b: Responses.QuestionItem) =>
-            a.id.length - b.id.length
-          }
-          title="ID"
-          dataIndex="id"
-          key="id"
-        />
-        <Column
-          sorter={(a: Responses.QuestionItem, b: Responses.QuestionItem) =>
-            a.content.length - b.content.length
-          }
-          title="Content"
-          dataIndex="content"
-          key="content"
-        />
-        <Column
-          title="Color"
-          dataIndex="color"
-          key="color"
-          render={(backgroundColor: string) => {
-            const backgroundColorItem = `#${backgroundColor}`;
-            return (
-              <div
-                className="main-color-item"
-                style={{
-                  backgroundColor: backgroundColorItem,
-                }}
-              >
-                <span className="main-color-text">{backgroundColorItem}</span>
-              </div>
-            );
-          }}
-        />
-        <Column
-          title="Text Color"
-          dataIndex="textColor"
-          key="textColor"
-          render={(textColorItem: string) => {
-            const colorItem = `#${textColorItem}`;
-            return (
-              <div
-                className="main-text-color-item"
-                style={{
-                  color: colorItem,
-                }}
-              >
-                <span className="main-color-text">{colorItem}</span>
-              </div>
-            );
-          }}
-        />
-        <Column
-          title="Gradient"
-          dataIndex="gradient"
-          key="gradient"
-          render={(gradient: string[]) => {
-            return (
-              <>
-                {gradient.length > 1 ? (
-                  <div style={{
-                    // background: `-webkit-gradient(#${gradient[0]},#${gradient[1]});`,
-                    background: `linear-gradient(to right,#${gradient[0]}, #${gradient[1]})`,
-                    display: 'flex',
-                    justifyContent: 'space-around',
-                    alignItems: 'center'
-                  }}>
-                    <span
-                      className="main-color-text"
-
+      {listQuestions.length ? (
+        <Table rowKey="id" dataSource={listQuestions}>
+          <Column
+            sorter={(a: Responses.QuestionItem, b: Responses.QuestionItem) =>
+              a.id.length - b.id.length
+            }
+            title="ID"
+            dataIndex="id"
+            key="id"
+          />
+          <Column
+            sorter={(a: Responses.QuestionItem, b: Responses.QuestionItem) =>
+              a.content.length - b.content.length
+            }
+            title="Content"
+            dataIndex="content"
+            key="content"
+          />
+          <Column
+            title="Color"
+            dataIndex="color"
+            key="color"
+            render={(backgroundColor: string) => {
+              const backgroundColorItem = `#${backgroundColor}`;
+              return (
+                <div
+                  className="main-color-item"
+                  style={{
+                    backgroundColor: backgroundColorItem,
+                  }}
+                >
+                  <span className="main-color-text">{backgroundColorItem}</span>
+                </div>
+              );
+            }}
+          />
+          <Column
+            title="Text Color"
+            dataIndex="textColor"
+            key="textColor"
+            render={(textColorItem: string) => {
+              const colorItem = `#${textColorItem}`;
+              return (
+                <div
+                  className="main-text-color-item"
+                  style={{
+                    color: colorItem,
+                  }}
+                >
+                  <span className="main-color-text">{colorItem}</span>
+                </div>
+              );
+            }}
+          />
+          <Column
+            title="Gradient"
+            dataIndex="gradient"
+            key="gradient"
+            render={(gradient: string[]) => {
+              return (
+                <>
+                  {gradient.length > 1 ? (
+                    <div
+                      style={{
+                        // background: `-webkit-gradient(#${gradient[0]},#${gradient[1]});`,
+                        background: `linear-gradient(to right,#${gradient[0]}, #${gradient[1]})`,
+                        display: 'flex',
+                        justifyContent: 'space-around',
+                        alignItems: 'center',
+                      }}
                     >
-                      {`#${gradient[0]}`}
-                    </span>
-                    <span
-                      className="main-color-text"
-
-                    >
-                      {`#${gradient[1]}`}
-                    </span>
-                  </div>
-                ) : null}
-              </>
-            );
-          }}
-        />
-        <Column
-          title="Action"
-          key="action"
-          render={(text: string, item: Responses.QuestionItem) => (
-            <Space size="middle">
-              <a
-                onClick={() => {
-                  handleUpdate(item);
-                }}
-              >
-                Update
-              </a>
-              /
-              <a
-                onClick={() => {
-                  handleDelete(item);
-                }}
-              >
-                Delete
-              </a>
-            </Space>
-          )}
-        />
-      </Table>: null}
+                      <span className="main-color-text">{`#${gradient[0]}`}</span>
+                      <span className="main-color-text">{`#${gradient[1]}`}</span>
+                    </div>
+                  ) : null}
+                </>
+              );
+            }}
+          />
+          <Column
+            title="Action"
+            key="action"
+            render={(text: string, item: Responses.QuestionItem) => (
+              <Space size="middle">
+                <a
+                  onClick={() => {
+                    handleUpdate(item);
+                  }}
+                >
+                  Update
+                </a>
+                /
+                <a
+                  onClick={() => {
+                    handleDelete(item);
+                  }}
+                >
+                  Delete
+                </a>
+              </Space>
+            )}
+          />
+        </Table>
+      ) : null}
       <Modal
         title={questionItem ? 'Update' : 'Add New'}
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        <Form
-          onFinish={handleSubmit}
-          form={form}
-          layout="vertical"
-        >
+        <Form onFinish={handleSubmit} form={form} layout="vertical">
           <Form.Item
             name="content"
             label="Content"

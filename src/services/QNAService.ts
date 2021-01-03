@@ -21,7 +21,7 @@ export class QNAService {
     `;
     return GraphQLClient.query({
       query,
-      fetchPolicy: "no-cache"
+      fetchPolicy: 'no-cache',
     });
   }
 
@@ -36,7 +36,7 @@ export class QNAService {
   ): Promise<FetchResult<Responses.SuccessResponse>> {
     const mutation = gql`
       mutation createQNA($question: String!, $answer: String!) {
-        adminCreateQnA(data: {question: $question, answer: $answer}) {
+        adminCreateQnA(data: { question: $question, answer: $answer }) {
           id
           answer
           question
@@ -59,7 +59,10 @@ export class QNAService {
   ): Promise<FetchResult<Responses.SuccessResponse>> {
     const mutation = gql`
       mutation updateQNA($id: String, $question: String, $answer: Boolean) {
-        adminUpdateQnA(data: {question: {set: $question}, answer: {set: $answer}}, where: {id: $id}) {
+        adminUpdateQnA(
+          data: { question: { set: $question }, answer: { set: $answer } }
+          where: { id: $id }
+        ) {
           id
           answer
           question
@@ -83,7 +86,7 @@ export class QNAService {
   ): Promise<FetchResult<Responses.SuccessResponse>> {
     const mutation = gql`
       mutation deleteQNA($id: String) {
-        adminDeleteQnA(where: {id: $id}) {
+        adminDeleteQnA(where: { id: $id }) {
           id
           question
           answer
