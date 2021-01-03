@@ -136,7 +136,7 @@ const UserTableList: React.FC<{}> = () => {
       title: 'avatar',
       dataIndex: 'avatar',
       render: (_, entity) => {
-        return <Image width={64} height={64} src={entity.avatar?.thumbnail} />;
+        return entity.avatar ? <Image width={64} height={64} src={entity.avatar.thumbnail} /> : null;
       },
     },
     {
