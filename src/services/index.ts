@@ -1,5 +1,7 @@
+export * from './AnalysisService';
 export * from './AuthenticationService';
 export * from './ConfigService';
+export * from './GoogleAnalyticsService';
 export * from './HobbyService';
 export * from './NotificationService';
 export * from './QNAService';

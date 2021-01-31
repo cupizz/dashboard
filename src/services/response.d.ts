@@ -1,9 +1,9 @@
 export namespace Responses {
-  export interface SuccessResponse<T = any> {
+  export type SuccessResponse<T = any> = {
     code?: number;
     message?: string;
     data?: T;
-  }
+  };
 
   export type UserData = {
     role: Role;
@@ -30,13 +30,13 @@ export namespace Responses {
     offline = 'offline',
   }
 
-  export interface User {
+  export type User = {
     id: string;
     data: UserDataList;
     createdAt: string;
-  }
+  };
 
-  export interface UserDataList {
+  export type UserDataList = {
     nickName: string;
     avatar: Avatar;
     cover: Cover;
@@ -73,97 +73,142 @@ export namespace Responses {
     statusUpdatedAt: string;
     socialProviders: SocialProvider[];
     status: UserStatus;
-  }
+  };
 
-  export interface Avatar {
+  export type Avatar = {
     id: string;
     url: string;
     thumbnail: string;
     type: string;
-  }
+  };
 
-  export interface Cover {
+  export type Cover = {
     id: string;
     url: string;
     thumbnail: string;
     type: string;
-  }
+  };
 
-  export interface Hobby {
+  export type Hobby = {
     id: string;
     value: string;
-  }
+  };
 
-  export interface UserImage {
+  export type UserImage = {
     createdAt: string;
     id: string;
     image: Image;
-  }
+  };
 
-  export interface Image {
+  export type Image = {
     id: string;
     thumbnail: string;
     type: string;
     url: string;
-  }
+  };
 
-  export interface Role {
+  export type Role = {
     canAccessBackOffice: boolean;
     description: string;
     id: string;
     name: string;
     permissions: string[];
-  }
+  };
 
-  export interface SocialProvider {
+  export type SocialProvider = {
     id: string;
     type: string;
-  }
+  };
 
-  export interface UserCount {
-    data: {
-      userCount: number;
-    };
-  }
-  export interface HobbyListItem {
+  export type UserCount = {
+    userCount: number;
+  };
+  export type HobbyListItem = {
     hobbies: HobbyItem[];
-  }
+  };
 
-  export interface HobbyItem {
+  export type HobbyItem = {
     id: string;
     value: string;
     isValid: boolean;
-  }
+  };
 
-  export interface QuestionListItem {
+  export type QuestionListItem = {
     adminQuestions: QuestionItem[];
-  }
+  };
 
-  export interface QuestionItem {
+  export type QuestionItem = {
     id: string;
     content: string;
     color: string;
     textColor: string;
     gradient: string[];
-  }
+  };
 
-  export interface QNAListItem {
+  export type QNAListItem = {
     qnAs: QNAItem[];
-  }
+  };
 
-  export interface QNAItem {
+  export type QNAItem = {
     id: string;
     question: string;
     answer: string;
-  }
+  };
 
-  export interface AppConfigItem {
+  export type AppConfigItem = {
     data: any;
     description: string;
     id: string;
     name: string;
-  }
-  export interface AppConfigListItem {
+  };
+  export type AppConfigListItem = {
     appConfigs: AppConfigItem[];
-  }
+  };
+
+  export type UserLikeCountListItem = {
+    users: UserLikeCount[];
+  };
+
+  export type UserLikeCount = {
+    id: string;
+    data: {
+      nickName: string;
+      likeCount: number;
+    };
+  };
+
+  export type UserDislikeCountListItem = {
+    users: UserDislikeCount[];
+  };
+
+  export type UserDislikeCount = {
+    id: string;
+    data: {
+      nickName: string;
+      dislikeCount: number;
+    };
+  };
+
+  export type DataReportGoogleAnalyticResponse = {
+    metricHeaders?: MetricHeadersEntity[] | null;
+    rows: RowsEntity[];
+    metadata: Metadata;
+    dimensionHeaders?: DimensionHeadersEntity[] | null;
+    rowCount: number;
+  };
+  export type MetricHeadersEntity = {
+    name: string;
+    type: string;
+  };
+  export type RowsEntity = {
+    dimensionValues: DimensionValuesEntityOrMetricValuesEntity[];
+    metricValues: DimensionValuesEntityOrMetricValuesEntity[];
+  };
+  export type DimensionValuesEntityOrMetricValuesEntity = {
+    value: string;
+  };
+  export type Metadata = {};
+  export type DimensionHeadersEntity = {
+    name: string;
+  };
 }

@@ -1,6 +1,7 @@
 import GraphQLClient from '@/utils/GraphQLClient';
-import { FetchResult, gql } from '@apollo/client';
-import { Responses } from './response';
+import type { FetchResult } from '@apollo/client';
+import { gql } from '@apollo/client';
+import type { Responses } from './response';
 
 export class ConfigService {
   /**

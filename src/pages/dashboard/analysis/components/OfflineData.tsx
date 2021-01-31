@@ -1,7 +1,7 @@
+import type { OfflineChartData, OfflineDataType } from '@/models/data';
 import { Card, Col, Row, Tabs } from 'antd';
 import React from 'react';
 import { FormattedMessage, useIntl } from 'umi';
-import { OfflineChartData, OfflineDataType } from '../data.d';
 import styles from '../style.less';
 import { Pie, TimelineChart } from './Charts';
 import NumberInfo from './NumberInfo';

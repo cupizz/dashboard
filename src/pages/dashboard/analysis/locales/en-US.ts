@@ -1,8 +1,8 @@
 export default {
   'dashboardandanalysis.analysis.test': 'Gongzhuan No.{no} shop',
   'dashboardandanalysis.analysis.introduce': 'Introduce',
-  'dashboardandanalysis.analysis.total-sales': 'Total Sales',
-  'dashboardandanalysis.analysis.day-sales': 'Daily Sales',
+  'dashboardandanalysis.analysis.user-online': 'User online',
+  // 'dashboardandanalysis.analysis.day-sales': 'Daily Sales',
   'dashboardandanalysis.analysis.visits': 'Visits',
   'dashboardandanalysis.analysis.visits-trend': 'Visits Trend',
   'dashboardandanalysis.analysis.visits-ranking': 'Visits Ranking',
@@ -31,4 +31,5 @@ export default {
   'dashboardandanalysis.table.search-keyword': 'Keyword',
   'dashboardandanalysis.table.users': 'Users',
   'dashboardandanalysis.table.weekly-range': 'Weekly Range',
+  'dashboardandanalysis.analysis.user-rates': 'User Rates',
 };

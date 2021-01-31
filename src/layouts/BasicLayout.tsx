@@ -11,13 +11,12 @@ import ProLayout, {
   BasicLayoutProps as ProLayoutProps,
   DefaultFooter,
   MenuDataItem,
-  SettingDrawer,
   Settings,
 } from '@ant-design/pro-layout';
 import { getMatchMenu } from '@umijs/route-utils';
 import { Button, Result } from 'antd';
 import React, { useEffect, useMemo, useRef } from 'react';
-import { connect, Dispatch, history, Link, useIntl } from 'umi';
+import { connect, Dispatch, getLocale, history, Link, useIntl } from 'umi';
 import logo from '../assets/logo.svg';
 import BaseLayout from './BaseLayout';
 
@@ -84,6 +83,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
       pathname: '/',
     },
   } = props;
+
   const menuDataRef = useRef<MenuDataItem[]>([]);
   useEffect(() => {
     if (dispatch) {
@@ -113,6 +113,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
     [location.pathname],
   );
   const { formatMessage } = useIntl();
+  console.log(getLocale());
   return (
     <BaseLayout>
       <ProLayout
@@ -158,7 +159,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
           {children}
         </Authorized>
       </ProLayout>
-      <SettingDrawer
+      {/* <SettingDrawer
         settings={settings}
         onSettingChange={(config) =>
           dispatch({
@@ -166,7 +167,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
             payload: config,
           })
         }
-      />
+      /> */}
     </BaseLayout>
   );
 };

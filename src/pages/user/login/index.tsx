@@ -1,4 +1,5 @@
-import { Params } from '@/services/param';
+import type { Params } from '@/services/param';
+import type { Responses } from '@/services/response';
 import { Alert, Checkbox, message } from 'antd';
 import React, { useState } from 'react';
 import { history } from 'umi';
@@ -34,8 +35,10 @@ const Login: React.FC<{}> = () => {
 
   const handleSubmit = (values: Params.LoginInput) => {
     handleLoginAccount(values)
-      .then((response: any) => {
-        if (response) {
+      .then((response: Responses.LoginOutput) => {
+        console.log(response);
+
+        if (response.login.info.data.role.canAccessBackOffice) {
           message.success('Login successfully!');
           history.replace('/');
         }

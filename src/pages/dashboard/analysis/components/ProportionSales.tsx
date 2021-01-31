@@ -1,12 +1,11 @@
+import type { PieDataType } from '@/models/data';
 import { Card, Radio } from 'antd';
-
-import { FormattedMessage } from 'umi';
-import { RadioChangeEvent } from 'antd/es/radio';
+import type { RadioChangeEvent } from 'antd/es/radio';
 import React from 'react';
-import { VisitDataType } from '../data.d';
-import { Pie } from './Charts';
-import Yuan from '../utils/Yuan';
+import { FormattedMessage } from 'umi';
 import styles from '../style.less';
+import Yuan from '../utils/Yuan';
+import { Pie } from './Charts';
 
 const ProportionSales = ({
   dropdownGroup,
@@ -18,7 +17,7 @@ const ProportionSales = ({
   loading: boolean;
   dropdownGroup: React.ReactNode;
   salesType: 'all' | 'online' | 'stores';
-  salesPieData: VisitDataType[];
+  salesPieData: PieDataType[];
   handleChangeSalesType?: (e: RadioChangeEvent) => void;
 }) => (
   <Card

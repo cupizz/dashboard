@@ -1,10 +1,11 @@
-import { UserTableListItem } from '@/pages/users/data';
+import type { UserTableListItem } from '@/pages/users/data';
 import GraphQLClient from '@/utils/GraphQLClient';
-import { RequestData } from '@ant-design/pro-table';
-import { FetchResult, gql } from '@apollo/client';
-import { SortOrder } from 'antd/lib/table/interface';
-import { Params } from './param';
-import { Responses } from './response';
+import type { RequestData } from '@ant-design/pro-table';
+import type { FetchResult } from '@apollo/client';
+import { gql } from '@apollo/client';
+import type { SortOrder } from 'antd/lib/table/interface';
+import type { Params } from './param';
+import type { Responses } from './response';
 
 export class UserService {
   /**
@@ -18,11 +19,9 @@ export class UserService {
       current?: number;
       keyword?: string;
     },
-    sort: {
-      [key: string]: SortOrder;
-    },
+    sort: Record<string, SortOrder>,
   ): Promise<RequestData<UserTableListItem>> {
-    let orderBy: { [x: string]: string } | null = null;
+    let orderBy: Record<string, string> | null = null;
     if (Object.keys(sort).length > 0) {
       const temp = {};
       Object.keys(sort).forEach((key) => {
@@ -31,7 +30,7 @@ export class UserService {
       orderBy = temp;
     }
 
-    let where: {} | null = null;
+    let where: Record<string, any> | null = null;
     if (Object.keys(params).length > 0) {
       let temp = {};
       let temp2 = Object.create({});
@@ -167,7 +166,7 @@ export class UserService {
    * @result AddressBookListResponse A JSON of array address book
    * @throws ResponseError
    */
-  public static async getCurrentUser(): Promise<RequestData<Responses.AdminUser>> {
+  public static async getCurrentUser(): Promise<FetchResult<Responses.AdminUser>> {
     return GraphQLClient.query({
       query: gql`
         query getCurrentUser {
@@ -256,14 +255,39 @@ export class UserService {
    * @result UserCount A JSON of object user count
    * @throws ResponseError
    */
-  public static async getUserOnline(): Promise<FetchResult<Responses.UserCount>> {
-    const UPDATE_USER_STATUS = gql`
-      query getUserOnline() {
-        userCount(where: { onlineStatus: { equals: online } })
+  public static async getTotalUserOnline(): Promise<FetchResult<Responses.UserCount>> {
+    return UserService.getUserCount({
+      onlineStatus: {
+        equals: 'online',
+      },
+    });
+  }
+
+  /**
+   * @summary count user online
+   * @result UserCount A JSON of object user count
+   * @throws ResponseError
+   */
+  public static async getTotalUserActive(): Promise<FetchResult<Responses.UserCount>> {
+    return UserService.getUserCount({
+      status: {
+        equals: 'enabled',
+      },
+    });
+  }
+
+  public static async getUserCount(where: any): Promise<FetchResult<Responses.UserCount>> {
+    const query = gql`
+      query getUserCount($where: UserWhereInput) {
+        userCount(where: $where)
       }
     `;
     return GraphQLClient.query({
-      query: UPDATE_USER_STATUS,
+      query,
+      fetchPolicy: 'no-cache',
+      variables: {
+        where,
+      },
     });
   }
 }

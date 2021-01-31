@@ -1,6 +1,7 @@
 import GraphQLClient from '@/utils/GraphQLClient';
-import { FetchResult, gql } from '@apollo/client';
-import { Params } from './param';
+import type { FetchResult } from '@apollo/client';
+import { gql } from '@apollo/client';
+import type { Params } from './param';
 
 export class NotificationService {
   /**

@@ -1,3 +1,5 @@
+import { analyticsdata_v1alpha } from 'googleapis';
+
 export namespace Params {
   export interface LoginInput {
     username: string;
@@ -62,5 +64,13 @@ export namespace Params {
     subtitle: string;
     content: string;
     image: File;
+  }
+  export interface QueryReportGoogleAnalytic {
+    startDate?: Date;
+    endDate?: Date;
+    metrics?: analyticsdata_v1alpha.Schema$Metric[];
+    dimensions?: analyticsdata_v1alpha.Schema$Dimension[];
+    orderBy?: any;
+    filter?: any;
   }
 }

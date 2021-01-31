@@ -1,14 +1,11 @@
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { Col, Row, Tooltip } from 'antd';
-
-import { FormattedMessage } from 'umi';
-import React from 'react';
 import numeral from 'numeral';
-import { ChartCard, MiniArea, MiniBar, MiniProgress, Field } from './Charts';
-import { VisitDataType } from '../data.d';
-import Trend from './Trend';
-import Yuan from '../utils/Yuan';
+import React from 'react';
+import { FormattedMessage } from 'umi';
 import styles from '../style.less';
+import { ChartCard, Field, MiniProgress } from './Charts';
+import Trend from './Trend';
 
 const topColResponsiveProps = {
   xs: 24,
@@ -19,58 +16,16 @@ const topColResponsiveProps = {
   style: { marginBottom: 24 },
 };
 
-const IntroduceRow = ({ loading, visitData }: { loading: boolean; visitData: VisitDataType[] }) => (
-  <Row gutter={24} type="flex">
-    <Col {...topColResponsiveProps}>
-      <ChartCard
-        bordered={false}
-        title={
-          <FormattedMessage
-            id="dashboardandanalysis.analysis.total-sales"
-            defaultMessage="Total Sales"
-          />
-        }
-        action={
-          <Tooltip
-            title={
-              <FormattedMessage
-                id="dashboardandanalysis.analysis.introduce"
-                defaultMessage="Introduce"
-              />
-            }
-          >
-            <InfoCircleOutlined />
-          </Tooltip>
-        }
-        loading={loading}
-        total={() => <Yuan>126560</Yuan>}
-        footer={
-          <Field
-            label={
-              <FormattedMessage
-                id="dashboardandanalysis.analysis.day-sales"
-                defaultMessage="Daily Sales"
-              />
-            }
-            value={`￥${numeral(12423).format('0,0')}`}
-          />
-        }
-        contentHeight={46}
-      >
-        <Trend flag="up" style={{ marginRight: 16 }}>
-          <FormattedMessage
-            id="dashboardandanalysis.analysis.week"
-            defaultMessage="Weekly Changes"
-          />
-          <span className={styles.trendText}>12%</span>
-        </Trend>
-        <Trend flag="down">
-          <FormattedMessage id="dashboardandanalysis.analysis.day" defaultMessage="Daily Changes" />
-          <span className={styles.trendText}>11%</span>
-        </Trend>
-      </ChartCard>
-    </Col>
-
+const IntroduceRow = ({
+  loading,
+  totalUserActive,
+  totalUserOnline,
+}: {
+  loading: boolean;
+  totalUserOnline: number;
+  totalUserActive: number;
+}) => (
+  <Row gutter={24}>
     <Col {...topColResponsiveProps}>
       <ChartCard
         bordered={false}
@@ -104,8 +59,52 @@ const IntroduceRow = ({ loading, visitData }: { loading: boolean; visitData: Vis
         }
         contentHeight={46}
       >
-        <MiniArea color="#975FE4" data={visitData} />
+        {/* <MiniArea color="#975FE4" data={visitData} /> */}
       </ChartCard>
+    </Col>
+
+    <Col {...topColResponsiveProps}>
+      <ChartCard
+        bordered={false}
+        title={
+          <FormattedMessage
+            id="dashboardandanalysis.analysis.user-online"
+            defaultMessage="User online"
+          />
+        }
+        action={
+          <Tooltip
+            title={
+              <FormattedMessage
+                id="dashboardandanalysis.analysis.introduce"
+                defaultMessage="Introduce"
+              />
+            }
+          >
+            <InfoCircleOutlined />
+          </Tooltip>
+        }
+        loading={loading}
+        total={() => totalUserOnline}
+        footer={
+          <Field
+            label={
+              <FormattedMessage
+                id="dashboardandanalysis.analysis.user-rates"
+                defaultMessage="User rate"
+              />
+            }
+            value={
+              totalUserActive > 0
+                ? `${numeral(totalUserOnline / totalUserActive).format(
+                    '0,0',
+                  )} % (of ${totalUserActive})`
+                : `0 % (of ${totalUserActive})`
+            }
+          />
+        }
+        contentHeight={46}
+      />
     </Col>
     <Col {...topColResponsiveProps}>
       <ChartCard
@@ -140,7 +139,7 @@ const IntroduceRow = ({ loading, visitData }: { loading: boolean; visitData: Vis
         }
         contentHeight={46}
       >
-        <MiniBar data={visitData} />
+        {/* <MiniBar data={visitData} /> */}
       </ChartCard>
     </Col>
     <Col {...topColResponsiveProps}>

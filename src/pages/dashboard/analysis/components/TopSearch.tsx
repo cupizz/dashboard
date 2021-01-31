@@ -1,14 +1,13 @@
+import type { PieDataType, SearchDataType } from '@/models/data';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { Card, Col, Row, Table, Tooltip } from 'antd';
-import { FormattedMessage } from 'umi';
-import React from 'react';
 import numeral from 'numeral';
-import { SearchDataType, VisitDataType } from '../data.d';
-
+import React from 'react';
+import { FormattedMessage } from 'umi';
+import styles from '../style.less';
 import { MiniArea } from './Charts';
 import NumberInfo from './NumberInfo';
 import Trend from './Trend';
-import styles from '../style.less';
 
 const columns = [
   {
@@ -59,7 +58,7 @@ const TopSearch = ({
   dropdownGroup,
 }: {
   loading: boolean;
-  visitData2: VisitDataType[];
+  visitData2: PieDataType[];
   dropdownGroup: React.ReactNode;
   searchData: SearchDataType[];
 }) => (
@@ -77,7 +76,7 @@ const TopSearch = ({
       height: '100%',
     }}
   >
-    <Row gutter={68} type="flex">
+    <Row gutter={68}>
       <Col sm={12} xs={24} style={{ marginBottom: 24 }}>
         <NumberInfo
           subTitle={

@@ -98,6 +98,7 @@ const UserTableList: React.FC<{}> = () => {
       sorter: true,
       valueType: 'dateTime',
       hideInForm: true,
+      sortOrder: 'descend',
     },
     {
       title: 'Operation',
@@ -136,7 +137,9 @@ const UserTableList: React.FC<{}> = () => {
       title: 'avatar',
       dataIndex: 'avatar',
       render: (_, entity) => {
-        return entity.avatar ? <Image width={64} height={64} src={entity.avatar.thumbnail} /> : null;
+        return entity.avatar ? (
+          <Image width={64} height={64} src={entity.avatar.thumbnail} />
+        ) : null;
       },
     },
     {
@@ -242,7 +245,9 @@ const UserTableList: React.FC<{}> = () => {
         return (
           <Space>
             {entity.userImages.map((userImage) => {
-              return <Image width={64} height={64} src={userImage.image.url} />;
+              return userImage.image ? (
+                <Image width={64} height={64} src={userImage.image.url} />
+              ) : null;
             })}
           </Space>
         );

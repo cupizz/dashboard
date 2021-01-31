@@ -1,21 +1,21 @@
 import { ACCESS_TOKEN } from '@/constant';
 import { useAuthContext } from '@/contexts';
-import { Params } from '@/services/param';
-import { Responses } from '@/services/response';
+import type { Params } from '@/services/param';
+import type { Responses } from '@/services/response';
 import { useModel } from 'umi';
 
-export interface LoginAccountFormValue {
+export type LoginAccountFormValue = {
   username: string;
   password: string;
   remember: boolean;
   phoneNumber: string;
-}
+};
 
 const saveToken = (accessToken: string) => {
   localStorage.setItem(ACCESS_TOKEN, accessToken);
 };
 
-export interface UseLoginType {
+export type UseLoginType = {
   loading: {
     submitting: boolean;
   };
@@ -23,7 +23,7 @@ export interface UseLoginType {
   methods: {
     handleLoginAccount: (values: Params.LoginInput) => Promise<any>;
   };
-}
+};
 
 export const useLogin = (): UseLoginType => {
   const { authEffect, authEffectLoading } = useAuthContext();
@@ -43,7 +43,7 @@ export const useLogin = (): UseLoginType => {
           saveToken(data.login.token);
           refresh();
         }
-        return response;
+        return response.data;
       });
   };
 

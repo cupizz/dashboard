@@ -1,102 +1,95 @@
+import { useDashboardAnalysisContext } from '@/contexts/dashboard';
 import { EllipsisOutlined } from '@ant-design/icons';
-import { Col, Dropdown, Menu, Row } from 'antd';
-import React, { Component, Suspense } from 'react';
 import { GridContent } from '@ant-design/pro-layout';
-import { RadioChangeEvent } from 'antd/es/radio';
-import { RangePickerProps } from 'antd/es/date-picker/generatePicker';
-import moment from 'moment';
-import { connect, Dispatch } from 'umi';
-
+import { Col, Dropdown, Menu, Row } from 'antd';
+import type { RangePickerProps } from 'antd/es/date-picker/generatePicker';
+import type moment from 'moment';
+import React, { Suspense, useEffect, useState } from 'react';
 import PageLoading from './components/PageLoading';
-import { getTimeDistance } from './utils/utils';
-import { AnalysisData } from './data.d';
 import styles from './style.less';
+import { getTimeDistance } from './utils/utils';
 
 const IntroduceRow = React.lazy(() => import('./components/IntroduceRow'));
-const SalesCard = React.lazy(() => import('./components/SalesCard'));
-const TopSearch = React.lazy(() => import('./components/TopSearch'));
-const ProportionSales = React.lazy(() => import('./components/ProportionSales'));
-const OfflineData = React.lazy(() => import('./components/OfflineData'));
+const VisitorCard = React.lazy(() => import('./components/VisitorCard'));
+const TopLikeOrDislike = React.lazy(() => import('./components/TopLikeOrDislike'));
+const ProportionPlatforms = React.lazy(() => import('./components/ProportionPlatforms'));
+const TimeLineData = React.lazy(() => import('./components/TimeLineData'));
 
 type RangePickerValue = RangePickerProps<moment.Moment>['value'];
 
-interface AnalysisProps {
-  dashboardAndanalysis: AnalysisData;
-  dispatch: Dispatch<any>;
-  loading: boolean;
-}
+const Analysis: React.FC<{}> = () => {
+  const {
+    dashboardAnalysisModel: {
+      offlineData,
+      sessionData,
+      topUserDislikeCount,
+      topUserLikeCount,
+      totalUserActive,
+      totalUserOnline,
+      platformData,
+      timeLineData,
+    },
+    dashboardAnalysisLoading,
+    dashboardAnalysisEffect,
+    dashboardAnalysisEffectLoading,
+  } = useDashboardAnalysisContext();
 
-interface AnalysisState {
-  salesType: 'all' | 'online' | 'stores';
-  currentTabKey: string;
-  rangePickerValue: RangePickerValue;
-}
+  const [currentTabKey, SetCurrentTabKey] = useState<string>('');
 
-class Analysis extends Component<AnalysisProps, AnalysisState> {
-  state: AnalysisState = {
-    salesType: 'all',
-    currentTabKey: '',
-    rangePickerValue: getTimeDistance('year'),
-  };
+  const [loadingIntroduce, SetLoadingIntroduce] = useState<boolean>(false);
 
-  reqRef: number = 0;
+  const [rangePickerValue, SetRangePickerValue] = useState<RangePickerValue>(
+    getTimeDistance('week'),
+  );
 
-  timeoutId: number = 0;
+  useEffect(() => {
+    dashboardAnalysisEffect?.fetchTopUserDislikeCount();
+    dashboardAnalysisEffect?.fetchTopUserLikeCount();
+    dashboardAnalysisEffect?.fetchTotalUserOnline();
+    dashboardAnalysisEffect?.fetchTotalUserActive();
+    dashboardAnalysisEffect?.fetchCountry();
+    dashboardAnalysisEffect?.fetchCity();
+    dashboardAnalysisEffect?.fetchPlatform();
+    dashboardAnalysisEffect?.fetchGender();
+    dashboardAnalysisEffect?.fetchTimeLineData();
+  }, []);
 
-  componentDidMount() {
-    const { dispatch } = this.props;
-    this.reqRef = requestAnimationFrame(() => {
-      dispatch({
-        type: 'dashboardAndanalysis/fetch',
+  useEffect(() => {
+    SetLoadingIntroduce(
+      dashboardAnalysisEffectLoading.fetchTotalUserOnline ||
+        dashboardAnalysisEffectLoading.fetchTotalUserActive,
+    );
+  }, [
+    dashboardAnalysisEffectLoading.fetchTotalUserOnline,
+    dashboardAnalysisEffectLoading.fetchTotalUserActive,
+  ]);
+
+  const getSessionData = () => {
+    if (rangePickerValue) {
+      dashboardAnalysisEffect?.fetchSessionData({
+        startDate: rangePickerValue[0]?.valueOf(),
+        endDate: rangePickerValue[1]?.valueOf(),
       });
-    });
-  }
-
-  componentWillUnmount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'dashboardAndanalysis/clear',
-    });
-    cancelAnimationFrame(this.reqRef);
-    clearTimeout(this.timeoutId);
-  }
-
-  handleChangeSalesType = (e: RadioChangeEvent) => {
-    this.setState({
-      salesType: e.target.value,
-    });
+    }
   };
 
-  handleTabChange = (key: string) => {
-    this.setState({
-      currentTabKey: key,
-    });
+  useEffect(() => {
+    getSessionData();
+  }, [rangePickerValue]);
+
+  const handleTabChange = (key: string) => {
+    SetCurrentTabKey(key);
   };
 
-  handleRangePickerChange = (rangePickerValue: RangePickerValue) => {
-    const { dispatch } = this.props;
-    this.setState({
-      rangePickerValue,
-    });
-
-    dispatch({
-      type: 'dashboardAndanalysis/fetchSalesData',
-    });
+  const handleRangePickerChange = (rangeValue: RangePickerValue) => {
+    SetRangePickerValue(rangeValue);
   };
 
-  selectDate = (type: 'today' | 'week' | 'month' | 'year') => {
-    const { dispatch } = this.props;
-    this.setState({
-      rangePickerValue: getTimeDistance(type),
-    });
-
-    dispatch({
-      type: 'dashboardAndanalysis/fetchSalesData',
-    });
+  const selectDate = (type: 'week' | 'month') => {
+    SetRangePickerValue(getTimeDistance(type));
   };
 
-  isActive = (type: 'today' | 'week' | 'month' | 'year') => {
-    const { rangePickerValue } = this.state;
+  const isActive = (type: 'week' | 'month') => {
     if (!rangePickerValue) {
       return '';
     }
@@ -115,113 +108,76 @@ class Analysis extends Component<AnalysisProps, AnalysisState> {
     }
     return '';
   };
+  const menu = (
+    <Menu>
+      <Menu.Item>Operation one</Menu.Item>
+      <Menu.Item>Operation two</Menu.Item>
+    </Menu>
+  );
 
-  render() {
-    const { rangePickerValue, salesType, currentTabKey } = this.state;
-    const { dashboardAndanalysis, loading } = this.props;
-    const {
-      visitData,
-      visitData2,
-      salesData,
-      searchData,
-      offlineData,
-      offlineChartData,
-      salesTypeData,
-      salesTypeDataOnline,
-      salesTypeDataOffline,
-    } = dashboardAndanalysis;
-    let salesPieData;
-    if (salesType === 'all') {
-      salesPieData = salesTypeData;
-    } else {
-      salesPieData = salesType === 'online' ? salesTypeDataOnline : salesTypeDataOffline;
-    }
-    const menu = (
-      <Menu>
-        <Menu.Item>操作一</Menu.Item>
-        <Menu.Item>操作二</Menu.Item>
-      </Menu>
-    );
+  const dropdownGroup = (
+    <span className={styles.iconGroup}>
+      <Dropdown overlay={menu} placement="bottomRight">
+        <EllipsisOutlined />
+      </Dropdown>
+    </span>
+  );
+  const activeKey = currentTabKey || (offlineData[0] && offlineData[0].name);
+  return (
+    <GridContent>
+      <React.Fragment>
+        <Suspense fallback={<PageLoading />}>
+          <IntroduceRow
+            loading={loadingIntroduce}
+            totalUserActive={totalUserActive}
+            totalUserOnline={totalUserOnline}
+          />
+        </Suspense>
+        <Suspense fallback={null}>
+          <VisitorCard
+            rangePickerValue={rangePickerValue}
+            isActive={isActive}
+            handleRangePickerChange={handleRangePickerChange}
+            loading={dashboardAnalysisEffectLoading.fetchSessionData}
+            selectDate={selectDate}
+            sessionData={sessionData}
+          />
+        </Suspense>
+        <Row
+          gutter={24}
+          style={{
+            marginTop: 24,
+          }}
+        >
+          <Col xl={12} lg={24} md={24} sm={24} xs={24}>
+            <Suspense fallback={null}>
+              <TopLikeOrDislike
+                loading={
+                  dashboardAnalysisEffectLoading.fetchTopUserLikeCount ||
+                  dashboardAnalysisEffectLoading.fetchTopUserLikeCount
+                }
+                topUserDislikeCount={topUserDislikeCount}
+                topUserLikeCount={topUserLikeCount}
+                dropdownGroup={dropdownGroup}
+              />
+            </Suspense>
+          </Col>
+          <Col xl={12} lg={24} md={24} sm={24} xs={24}>
+            <Suspense fallback={null}>
+              <ProportionPlatforms
+                dropdownGroup={dropdownGroup}
+                loading={dashboardAnalysisEffectLoading.fetchPlatform}
+                platformData={platformData}
+              />
+            </Suspense>
+          </Col>
+        </Row>
+        <Suspense fallback={null}>
+          <TimeLineData loading={dashboardAnalysisLoading} timeLineData={timeLineData} />
+        </Suspense>
+      </React.Fragment>
+    </GridContent>
+  );
+};
 
-    const dropdownGroup = (
-      <span className={styles.iconGroup}>
-        <Dropdown overlay={menu} placement="bottomRight">
-          <EllipsisOutlined />
-        </Dropdown>
-      </span>
-    );
-
-    const activeKey = currentTabKey || (offlineData[0] && offlineData[0].name);
-    return (
-      <GridContent>
-        <React.Fragment>
-          <Suspense fallback={<PageLoading />}>
-            <IntroduceRow loading={loading} visitData={visitData} />
-          </Suspense>
-          <Suspense fallback={null}>
-            <SalesCard
-              rangePickerValue={rangePickerValue}
-              salesData={salesData}
-              isActive={this.isActive}
-              handleRangePickerChange={this.handleRangePickerChange}
-              loading={loading}
-              selectDate={this.selectDate}
-            />
-          </Suspense>
-          <Row
-            gutter={24}
-            style={{
-              marginTop: 24,
-            }}
-          >
-            <Col xl={12} lg={24} md={24} sm={24} xs={24}>
-              <Suspense fallback={null}>
-                <TopSearch
-                  loading={loading}
-                  visitData2={visitData2}
-                  searchData={searchData}
-                  dropdownGroup={dropdownGroup}
-                />
-              </Suspense>
-            </Col>
-            <Col xl={12} lg={24} md={24} sm={24} xs={24}>
-              <Suspense fallback={null}>
-                <ProportionSales
-                  dropdownGroup={dropdownGroup}
-                  salesType={salesType}
-                  loading={loading}
-                  salesPieData={salesPieData}
-                  handleChangeSalesType={this.handleChangeSalesType}
-                />
-              </Suspense>
-            </Col>
-          </Row>
-          <Suspense fallback={null}>
-            <OfflineData
-              activeKey={activeKey}
-              loading={loading}
-              offlineData={offlineData}
-              offlineChartData={offlineChartData}
-              handleTabChange={this.handleTabChange}
-            />
-          </Suspense>
-        </React.Fragment>
-      </GridContent>
-    );
-  }
-}
-
-export default connect(
-  ({
-    dashboardAndanalysis,
-    loading,
-  }: {
-    dashboardAndanalysis: any;
-    loading: {
-      effects: { [key: string]: boolean };
-    };
-  }) => ({
-    dashboardAndanalysis,
-    loading: loading.effects['dashboardAndanalysis/fetch'],
-  }),
-)(Analysis);
+export default Analysis;

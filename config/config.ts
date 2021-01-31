@@ -3,7 +3,7 @@ import { defineConfig } from 'umi';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routes from './routes';
-const { REACT_APP_ENV, ENV, GRAPHQL_URL } = process.env;
+const { REACT_APP_ENV, ENV, GRAPHQL_URL, GOOGLE_ANALYTICS_API_URL } = process.env;
 export default defineConfig({
   hash: true,
   antd: {},
@@ -14,11 +14,11 @@ export default defineConfig({
     type: 'browser',
   },
   locale: {
+    // default zh-CN
     default: 'en-US',
-    // antd: true,
+    antd: true,
     // default true, when it is true, will use `navigator.language` overwrite default
     baseNavigator: false,
-    baseSeparator: '-',
   },
   dynamicImport: {
     loading: '@/components/PageLoading/index',
@@ -42,6 +42,7 @@ export default defineConfig({
   esbuild: {},
   define: {
     ENV: ENV,
-    GRAPHQL_URL: GRAPHQL_URL,
+    GRAPHQL_URL,
+    GOOGLE_ANALYTICS_API_URL,
   },
 });

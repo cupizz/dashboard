@@ -1,12 +1,11 @@
-import { Axis, Chart, Geom, Legend, Tooltip } from 'bizcharts';
-
 import DataSet from '@antv/data-set';
-import React from 'react';
+import { Axis, Chart, Geom, Legend, Tooltip } from 'bizcharts';
 import Slider from 'bizcharts-plugin-slider';
+import React from 'react';
 import autoHeight from '../autoHeight';
 import styles from './index.less';
 
-export interface TimelineChartProps {
+export type TimelineChartProps = {
   data: {
     x: number;
     y1: number;
@@ -18,7 +17,7 @@ export interface TimelineChartProps {
   height?: number;
   style?: React.CSSProperties;
   borderWidth?: number;
-}
+};
 
 const TimelineChart: React.FC<TimelineChartProps> = (props) => {
   const {
