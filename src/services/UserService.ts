@@ -140,7 +140,7 @@ export class UserService {
       `,
       variables: {
         take: params.pageSize,
-        skip: params.current - 1,
+        skip: (params.current - 1) * params.pageSize,
         orderBy: orderBy ? [orderBy] : [],
         where: where || undefined,
       },

@@ -1,9 +1,9 @@
 import { Avatar } from 'antd';
-import React from 'react';
 import moment from 'moment';
+import React from 'react';
 import styles from './index.less';
 
-export interface ApplicationsProps {
+export type ApplicationsProps = {
   data: {
     content?: string;
     updatedAt?: any;

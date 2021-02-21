@@ -2,18 +2,29 @@ import { UserService } from '@/services';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import { PageContainer } from '@ant-design/pro-layout';
-import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
-import { ApolloError } from '@apollo/client';
+import type { ActionType, ProColumns } from '@ant-design/pro-table';
+import ProTable from '@ant-design/pro-table';
+import type { ApolloError } from '@apollo/client';
+import type { History } from '@umijs/runtime';
 import { Badge, Drawer, Image, message, Modal, Space, Tooltip, Typography } from 'antd';
-import { SortOrder } from 'antd/lib/table/interface';
-import React, { useRef, useState } from 'react';
-import { OnlineStatus, UserStatus, UserTableListItem } from './data.d';
+import type { SortOrder } from 'antd/lib/table/interface';
+import React, { useEffect, useRef, useState } from 'react';
+import type { UserTableListItem } from './data.d';
+import { OnlineStatus, UserStatus } from './data.d';
 
 const { Title } = Typography;
 
-const UserTableList: React.FC<{}> = () => {
+const UserTableList: React.FC<{history: History}> = ({history}) => {
   const actionRef = useRef<ActionType>();
   const [row, setRow] = useState<UserTableListItem>();
+  const [defaultFilteredValueId, setDefaultFilteredValueId] = useState<string|undefined>(()=>{
+    if(history.location.query){
+      if(history.location.query.id){
+        return history.location.query.id as string;
+      }
+    }
+    return undefined;
+  });
 
   const handleUpdateStatus = (user: UserTableListItem) => {
     Modal.confirm({
@@ -40,17 +51,27 @@ const UserTableList: React.FC<{}> = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedRowsState, setSelectedRows] = useState<UserTableListItem[]>([]);
+
+  console.log(defaultFilteredValueId);
+  useEffect(()=>{
+    if(history.location.query){
+      if(history.location.query.id){
+        setDefaultFilteredValueId(history.location.query.id as string);
+      }
+      else{
+        setDefaultFilteredValueId(undefined);
+      }
+    } else{
+      setDefaultFilteredValueId(undefined);
+    }
+
+  }, [history.location.query]);
   const columns: ProColumns<UserTableListItem>[] = [
     {
       title: 'id',
       dataIndex: 'id',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: 'Rule name is required',
-          },
-        ],
+      formItemProps:{
+        initialValue: defaultFilteredValueId,
       },
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
@@ -87,7 +108,7 @@ const UserTableList: React.FC<{}> = () => {
         enabled: { text: 'enabled', status: 'enabled' },
         disabled: {
           text: 'disabled',
-          disabled: 'disabled',
+          status: 'disabled',
         },
       },
       sorter: true,
@@ -98,7 +119,7 @@ const UserTableList: React.FC<{}> = () => {
       sorter: true,
       valueType: 'dateTime',
       hideInForm: true,
-      sortOrder: 'descend',
+      defaultSortOrder: 'descend'
     },
     {
       title: 'Operation',
@@ -121,14 +142,6 @@ const UserTableList: React.FC<{}> = () => {
     {
       title: 'id',
       dataIndex: 'id',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: 'Rule name is required',
-          },
-        ],
-      },
       render: (dom) => {
         return <a>{dom}</a>;
       },
@@ -163,6 +176,18 @@ const UserTableList: React.FC<{}> = () => {
     {
       title: 'Phone',
       dataIndex: 'phoneNumber',
+    },
+    {
+      title: 'Social Providers',
+      dataIndex: 'socialProviders',
+      valueType: 'code',
+      renderText: (_dom, entity) => {
+        let text = '';
+        entity.socialProviders.forEach((provider) => {
+          text += `id: ${provider.id} type: ${provider.type}\n`;
+        });
+        return text;
+      },
     },
     {
       title: 'Job',
@@ -253,39 +278,30 @@ const UserTableList: React.FC<{}> = () => {
         );
       },
     },
-    {
-      title: 'Operation',
-      valueType: 'option',
-      render: () => (
-        <>
-          <a
-            onClick={() => {
-              // handleUpdateModalVisible(true);
-              // setStepFormValues(record);
-            }}
-          >
-            Update status
-          </a>
-        </>
-      ),
-    },
   ];
 
   const queryListUser = async (
     params: any & {
       pageSize?: number;
       current?: number;
-      keyword?: string;
     },
-    sort: {
-      [key: string]: SortOrder;
-    },
-    filter: {
-      [key: string]: React.ReactText[];
-    },
+    sort: Record<string, SortOrder>,
+    filter: Record<string, React.ReactText[]>,
   ) => {
-    console.log(params, sort, filter);
+    console.log({
+      params
+    });
+
+    if(!Object.keys(sort).length){
+      // eslint-disable-next-line no-param-reassign
+      sort.createdAt = 'descend';
+    }
     const res = await UserService.getListUser(params, sort);
+    if(defaultFilteredValueId){
+      if(res.data && res.data.length){
+        setRow(res.data[0]);
+      }
+    }
     return res;
   };
 
@@ -333,6 +349,18 @@ const UserTableList: React.FC<{}> = () => {
         }}
         request={(params, sort, filter) => queryListUser(params, sort, filter)}
         columns={columns}
+        onReset={()=>{
+          history.replace({
+            query: undefined
+          });
+        }}
+        onSubmit={()=>{
+          if(defaultFilteredValueId){
+            history.replace({
+              query: undefined
+            });
+          }
+        }}
 
         // rowSelection={{
         //   onChange: (_, selectedRows) => setSelectedRows(selectedRows),

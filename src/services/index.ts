@@ -4,6 +4,8 @@ export * from './ConfigService';
 export * from './GoogleAnalyticsService';
 export * from './HobbyService';
 export * from './NotificationService';
+export * from './PostCategoryService';
+export * from './PostService';
 export * from './QNAService';
 export * from './QuestionService';
 export * from './UserService';

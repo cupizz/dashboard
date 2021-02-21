@@ -56,4 +56,7 @@ export default {
   'menu.setting.hobby': 'Hobby',
   'menu.setting.question': 'Question',
   'menu.setting.qna': 'QNA',
+  'menu.post': 'Post',
+  'menu.post.post-category': 'Post Category',
+  'menu.post.list-post': 'List Post'
 };

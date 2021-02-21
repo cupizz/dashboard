@@ -1,7 +1,7 @@
-import { UserLikeCountType } from '@/models/data';
+import type { UserLikeCountType } from '@/models/data';
 import { Card, Table, Tabs } from 'antd';
 import React from 'react';
-import { FormattedMessage } from 'umi';
+import { FormattedMessage, Link } from 'umi';
 import styles from '../style.less';
 
 const { TabPane } = Tabs;
@@ -16,7 +16,7 @@ const columns = [
     title: <FormattedMessage id="dashboardandanalysis.table.user" defaultMessage="User" />,
     dataIndex: 'nickName',
     key: 'nickName',
-    render: (text: React.ReactNode) => <a href="#">{text}</a>,
+    render: (text: React.ReactNode, entity: any) => <Link to={`/users?id=${entity.id}`}>{text}</Link>,
   },
   {
     title: <FormattedMessage id="dashboardandanalysis.table.count" defaultMessage="Count" />,

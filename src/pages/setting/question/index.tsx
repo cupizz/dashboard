@@ -1,11 +1,12 @@
 import { QuestionService } from '@/services';
-import { Responses } from '@/services/response';
+import type { Responses } from '@/services/response';
 import Logger from '@/utils/Logger';
 import { ExclamationCircleOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Button, Form, Input, message, Modal, Space, Table } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { ColorResult, SketchPicker } from 'react-color';
+import type { ColorResult } from 'react-color';
+import { SketchPicker } from 'react-color';
 import { GradientPicker } from 'react-linear-gradient-picker';
 
 const rgbToRgba = (rgb: string, a = 1) => rgb.replace('rgb(', 'rgba(').replace(')', `, ${a})`);
@@ -47,7 +48,7 @@ function rgbToHex(rgb: string) {
   return hex;
 }
 
-interface Palette {
+type Palette = {
   offset: string;
   color: string;
 }
@@ -55,7 +56,6 @@ interface Palette {
 const { Column } = Table;
 const Question = () => {
   const [listQuestions, setListQuestions] = useState<Responses.QuestionItem[]>([]);
-  console.log(listQuestions.length);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -125,7 +125,6 @@ const Question = () => {
     QuestionService.getListQuestion()
       .then((res) => {
         if (res.data) {
-          console.log(res);
 
           setListQuestions(res.data.adminQuestions);
         }

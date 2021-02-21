@@ -1,12 +1,12 @@
-import { StarTwoTone, LikeOutlined, MessageFilled } from '@ant-design/icons';
+import { LikeOutlined, MessageFilled, StarTwoTone } from '@ant-design/icons';
 import { List, Tag } from 'antd';
 import React from 'react';
-
 import { connect } from 'umi';
+import type { ListItemDataType } from '../../data.d';
+import type { ModalState } from '../../model';
 import ArticleListContent from '../ArticleListContent';
-import { ListItemDataType } from '../../data.d';
-import { ModalState } from '../../model';
 import styles from './index.less';
+
 
 const Articles: React.FC<Partial<ModalState>> = (props) => {
   const { list } = props;

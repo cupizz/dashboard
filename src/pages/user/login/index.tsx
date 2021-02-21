@@ -36,7 +36,6 @@ const Login: React.FC<{}> = () => {
   const handleSubmit = (values: Params.LoginInput) => {
     handleLoginAccount(values)
       .then((response: Responses.LoginOutput) => {
-        console.log(response);
 
         if (response.login.info.data.role.canAccessBackOffice) {
           message.success('Login successfully!');
@@ -48,7 +47,7 @@ const Login: React.FC<{}> = () => {
         if (error && error.errors) {
           SetLoginMessage(error.errors.message);
         } else {
-          SetLoginMessage('Account or password error (cuppizz.fc)');
+          SetLoginMessage('Account or password error (cupizz.fc)');
         }
       });
   };

@@ -35,8 +35,6 @@ export const useLogin = (): UseLoginType => {
         ...values,
       })
       .then((response: any) => {
-        // eslint-disable-next-line no-console
-        console.log(response);
 
         if (response) {
           const data = response.data as Responses.LoginOutput;

@@ -1,31 +1,40 @@
-import { HobbyService } from '@/services';
+import { PostCategoryService } from '@/services';
 import type { Responses } from '@/services/response';
 import Logger from '@/utils/Logger';
-import { ExclamationCircleOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
-import { Button, Form, Input, message, Modal, Radio, Space, Table } from 'antd';
+import { Button, Form, Input, message, Modal, Space, Table } from 'antd';
 import React, { useEffect, useState } from 'react';
+import type { ColorResult } from 'react-color';
+import { SketchPicker } from 'react-color';
 
 const { Column } = Table;
-const Hobby = () => {
-  const [listHobbies, setListHobbies] = useState<Responses.HobbyItem[]>([]);
+const PostCategory = () => {
+  const [listPostCategories, setListPostCategories] = useState<Responses.PostCategoryItem[]>([]);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const [form] = Form.useForm();
-  const [hobbyItem, setHobbyItem] = useState<Responses.HobbyItem | null>(null);
+  const [categoryItem, setPostCategoryItem] = useState<Responses.PostCategoryItem | null>(null);
 
-  const handleAddNew = () => {
-    setHobbyItem(null);
-    form.resetFields();
-    setIsModalVisible(true);
+  const [color, setColor] = useState<string>('#fff');
+  const handleChangeColorComplete = (value: ColorResult) => {
+    setColor(value.hex);
   };
 
-  const handleUpdate = (item: Responses.HobbyItem) => {
-    setHobbyItem(item);
+  const handleAddNew = () => {
+    setPostCategoryItem(null);
+    setIsModalVisible(true);
+    form.resetFields();
+    setColor('#fff');
+  };
+
+  const handleUpdate = (item: Responses.PostCategoryItem) => {
+    setPostCategoryItem(item);
     form.setFieldsValue({
       ...item,
     });
+    setColor(`#${item.color}`);
     setIsModalVisible(true);
   };
 
@@ -34,11 +43,12 @@ const Hobby = () => {
   };
 
   const loadData = () => {
-    HobbyService.getListHobby()
+    PostCategoryService.getListPostCategory()
       .then((res) => {
-
         if (res.data) {
-          setListHobbies(res.data.hobbies);
+          console.log(res);
+
+          setListPostCategories(res.data.postCategories);
         }
       })
       .catch((error: any) => {
@@ -48,8 +58,12 @@ const Hobby = () => {
 
   const handleSubmit = (value: any) => {
     setIsModalVisible(false);
-    if (hobbyItem) {
-      HobbyService.updateHobby({ id: hobbyItem.id, ...value })
+    if (categoryItem) {
+      PostCategoryService.updatePostCategory({
+        id: categoryItem.id,
+        value: value.value,
+        color: color.substring(1, color.length),
+      })
         .then(() => {
           message.success('Success!');
         })
@@ -58,10 +72,13 @@ const Hobby = () => {
         })
         .finally(() => {
           loadData();
-          setHobbyItem(null);
+          setPostCategoryItem(null);
         });
     } else {
-      HobbyService.createHobby({ ...value })
+      PostCategoryService.createPostCategory({
+        value: value.value,
+        color: color.substring(1, color.length),
+      })
         .then(() => {
           message.success('Success!');
         })
@@ -70,7 +87,7 @@ const Hobby = () => {
         })
         .finally(() => {
           loadData();
-          setHobbyItem(null);
+          setPostCategoryItem(null);
         });
     }
   };
@@ -81,28 +98,6 @@ const Hobby = () => {
   useEffect(() => {
     loadData();
   }, []);
-
-  const handleDelete = (item: Responses.HobbyItem) => {
-    Modal.confirm({
-      title: 'Confirm',
-      icon: <ExclamationCircleOutlined />,
-      content: 'Are you sure about this?',
-      okText: 'Oke',
-      cancelText: 'Cancel',
-      onOk: () => {
-        HobbyService.deleteHobby({
-          id: item.id,
-        })
-          .then(() => {
-            message.success('Success!');
-            loadData();
-          })
-          .catch((error: any) => {
-            message.error(error);
-          });
-      },
-    });
-  };
 
   return (
     <PageContainer
@@ -126,16 +121,18 @@ const Hobby = () => {
         </Button>,
       ]}
     >
-      {listHobbies.length ? (
-        <Table rowKey="id" dataSource={listHobbies}>
+      {listPostCategories.length ? (
+        <Table rowKey="id" dataSource={listPostCategories}>
           <Column
-            sorter={(a: Responses.HobbyItem, b: Responses.HobbyItem) => a.id.length - b.id.length}
+            sorter={(a: Responses.PostCategoryItem, b: Responses.PostCategoryItem) =>
+              a.id.length - b.id.length
+            }
             title="ID"
             dataIndex="id"
             key="id"
           />
           <Column
-            sorter={(a: Responses.HobbyItem, b: Responses.HobbyItem) =>
+            sorter={(a: Responses.PostCategoryItem, b: Responses.PostCategoryItem) =>
               a.value.length - b.value.length
             }
             title="Value"
@@ -143,17 +140,27 @@ const Hobby = () => {
             key="value"
           />
           <Column
-            title="Is Valid"
-            dataIndex="isValid"
-            key="isValid"
-            render={(isValid: boolean) => {
-              return isValid ? 'True' : 'False';
+            title="Color"
+            dataIndex="color"
+            key="color"
+            render={(backgroundColor: string) => {
+              const backgroundColorItem = `#${backgroundColor}`;
+              return (
+                <div
+                  className="main-color-item"
+                  style={{
+                    backgroundColor: backgroundColorItem,
+                  }}
+                >
+                  <span className="main-color-text">{backgroundColorItem}</span>
+                </div>
+              );
             }}
           />
           <Column
             title="Action"
             key="action"
-            render={(text: string, item: Responses.HobbyItem) => (
+            render={(text: string, item: Responses.PostCategoryItem) => (
               <Space size="middle">
                 <a
                   onClick={() => {
@@ -162,21 +169,13 @@ const Hobby = () => {
                 >
                   Update
                 </a>
-                /
-                <a
-                  onClick={() => {
-                    handleDelete(item);
-                  }}
-                >
-                  Delete
-                </a>
               </Space>
             )}
           />
         </Table>
       ) : null}
       <Modal
-        title={hobbyItem ? 'Update' : 'Add New'}
+        title={categoryItem ? 'Update' : 'Add New'}
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -185,16 +184,13 @@ const Hobby = () => {
           <Form.Item
             name="value"
             label="Value"
-            tooltip={{ title: 'Hobby Name', icon: <InfoCircleOutlined /> }}
-            rules={[{ required: true, message: 'Please input Hobby Name!' }]}
+            tooltip={{ title: 'Post Category Value?', icon: <InfoCircleOutlined /> }}
+            rules={[{ required: true, message: 'Please input Post Category Value!' }]}
           >
-            <Input placeholder="Hobby Name" />
+            <Input placeholder="Post Category Value" />
           </Form.Item>
-          <Form.Item label="Is Valid" name="isValid">
-            <Radio.Group>
-              <Radio.Button value>True</Radio.Button>
-              <Radio.Button value={false}>False</Radio.Button>
-            </Radio.Group>
+          <Form.Item label="Color">
+            <SketchPicker color={color} onChangeComplete={handleChangeColorComplete} />
           </Form.Item>
         </Form>
       </Modal>
@@ -202,4 +198,4 @@ const Hobby = () => {
   );
 };
 
-export default Hobby;
+export default PostCategory;

@@ -211,4 +211,65 @@ export namespace Responses {
   export type DimensionHeadersEntity = {
     name: string;
   };
+
+  export type PostCategoryListItem = {
+    postCategories: PostCategoryItem[];
+  };
+
+  export type PostCategoryItem = {
+    id: string;
+    value: string;
+    color: string;
+  };
+
+  export type PostItemList = {
+    category: PostCategoryItem;
+    commentCount: number;
+    content: string;
+    createdAt: Date;
+    createdBy: UserInfo;
+    deletedAt?: any;
+    id: number;
+    updatedAt: Date;
+    likeCount: number;
+    isMyPost: boolean;
+    images: Image[];
+  };
+
+  export type UserInfo = {
+    id: string;
+    data: {
+      nickName: string;
+      avatar: {
+        thumbnail: string;
+      };
+    };
+  };
+
+  export type PostItem = {
+    category: PostCategoryItem;
+    commentCount: number;
+    content: string;
+    createdAt: string;
+    updatedAt: string;
+    createdBy: UserInfo;
+    deletedAt: string;
+    id: number;
+    updatedAt: string;
+    likeCount: number;
+    isMyPost: boolean;
+    comments: Comment[];
+    usersLiked: UserInfo[];
+    myLikedPostType: any;
+  };
+
+  export type CommentItem = {
+    content: string;
+    createdAt: string;
+    isMyComment: boolean;
+    isIncognito: boolean;
+    index: number;
+    id: string;
+    createdBy: UserInfo;
+  };
 }

@@ -1,7 +1,7 @@
-import { analyticsdata_v1alpha } from 'googleapis';
+import type { analyticsdata_v1alpha } from 'googleapis';
 
 export namespace Params {
-  export interface LoginInput {
+  export type LoginInput = {
     username: string;
     password: string;
   }
@@ -10,33 +10,33 @@ export namespace Params {
     enabled = 'enabled',
     disabled = 'disabled',
   }
-  export interface DeleteHobby {
+  export type DeleteHobby = {
     id: string;
   }
 
-  export interface CreateHobby {
+  export type CreateHobby = {
     value: string;
     isValid: boolean;
   }
 
-  export interface UpdateHobby {
+  export type UpdateHobby = {
     id: string;
     value: string;
     isValid: boolean;
   }
 
-  export interface DeleteQuestion {
+  export type DeleteQuestion = {
     id: string;
   }
 
-  export interface CreateQuestion {
+  export type CreateQuestion = {
     content: string;
     color: string;
     textColor: string;
     gradient?: string[];
   }
 
-  export interface UpdateQuestion {
+  export type UpdateQuestion = {
     id: string;
     content?: string;
     color?: string;
@@ -44,33 +44,44 @@ export namespace Params {
     gradient?: string[];
   }
 
-  export interface DeleteQNA {
+  export type DeleteQNA = {
     id: string;
   }
 
-  export interface CreateQNA {
+  export type CreateQNA = {
     question: string;
     answer: string;
   }
 
-  export interface UpdateQNA {
+  export type UpdateQNA = {
     id: string;
     question: string;
     answer: string;
   }
 
-  export interface NotificationInput {
+  export type NotificationInput = {
     title: string;
     subtitle: string;
     content: string;
     image: File;
   }
-  export interface QueryReportGoogleAnalytic {
+  export type QueryReportGoogleAnalytic = {
     startDate?: Date;
     endDate?: Date;
     metrics?: analyticsdata_v1alpha.Schema$Metric[];
     dimensions?: analyticsdata_v1alpha.Schema$Dimension[];
     orderBy?: any;
     filter?: any;
+  }
+
+  export type CreatePostCategory = {
+    value: string;
+    color: string;
+  }
+
+  export type UpdatePostCategory = {
+    id: string;
+    value: string;
+    color: string;
   }
 }

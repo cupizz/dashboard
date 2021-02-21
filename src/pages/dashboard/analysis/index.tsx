@@ -1,11 +1,10 @@
 import { useDashboardAnalysisContext } from '@/contexts/dashboard';
 import { EllipsisOutlined } from '@ant-design/icons';
-import { GridContent } from '@ant-design/pro-layout';
+import { GridContent, PageLoading } from '@ant-design/pro-layout';
 import { Col, Dropdown, Menu, Row } from 'antd';
 import type { RangePickerProps } from 'antd/es/date-picker/generatePicker';
 import type moment from 'moment';
 import React, { Suspense, useEffect, useState } from 'react';
-import PageLoading from './components/PageLoading';
 import styles from './style.less';
 import { getTimeDistance } from './utils/utils';
 
@@ -20,7 +19,6 @@ type RangePickerValue = RangePickerProps<moment.Moment>['value'];
 const Analysis: React.FC<{}> = () => {
   const {
     dashboardAnalysisModel: {
-      offlineData,
       sessionData,
       topUserDislikeCount,
       topUserLikeCount,
@@ -33,8 +31,6 @@ const Analysis: React.FC<{}> = () => {
     dashboardAnalysisEffect,
     dashboardAnalysisEffectLoading,
   } = useDashboardAnalysisContext();
-
-  const [currentTabKey, SetCurrentTabKey] = useState<string>('');
 
   const [loadingIntroduce, SetLoadingIntroduce] = useState<boolean>(false);
 
@@ -77,10 +73,6 @@ const Analysis: React.FC<{}> = () => {
     getSessionData();
   }, [rangePickerValue]);
 
-  const handleTabChange = (key: string) => {
-    SetCurrentTabKey(key);
-  };
-
   const handleRangePickerChange = (rangeValue: RangePickerValue) => {
     SetRangePickerValue(rangeValue);
   };
@@ -122,7 +114,6 @@ const Analysis: React.FC<{}> = () => {
       </Dropdown>
     </span>
   );
-  const activeKey = currentTabKey || (offlineData[0] && offlineData[0].name);
   return (
     <GridContent>
       <React.Fragment>

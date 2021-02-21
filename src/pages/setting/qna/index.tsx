@@ -1,9 +1,9 @@
 import { QNAService } from '@/services';
-import { Responses } from '@/services/response';
+import type { Responses } from '@/services/response';
 import Logger from '@/utils/Logger';
 import { ExclamationCircleOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
-import { FetchResult } from '@apollo/client';
+import type { FetchResult } from '@apollo/client';
 import { Button, Form, Input, message, Modal, Space, Table } from 'antd';
 import React, { useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
@@ -41,7 +41,6 @@ const QNA = () => {
   const loadData = () => {
     QNAService.getListQNA()
       .then((res: FetchResult<Responses.QNAListItem, Record<string, any>>) => {
-        console.log(res);
 
         if (res.data) {
           setListQNAs(res.data.qnAs);
@@ -87,8 +86,6 @@ const QNA = () => {
   useEffect(() => {
     loadData();
   }, []);
-
-  console.log(qnaItem);
 
   const handleDelete = (item: Responses.QNAItem) => {
     Modal.confirm({

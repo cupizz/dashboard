@@ -86,6 +86,29 @@ export default [
             component: './notification',
           },
           {
+            path: '/post',
+            icon: 'edit',
+            name: 'post',
+            routes: [
+              {
+                path: '/',
+                redirect: '/post/list',
+              },
+              {
+                name: 'list-post',
+                icon: 'post',
+                path: '/post/list',
+                component: './post',
+              },
+              {
+                name: 'post-category',
+                icon: 'post',
+                path: '/post/category',
+                component: './post/category',
+              },
+            ],
+          },
+          {
             path: '/setting',
             icon: 'setting',
             name: 'setting',
