@@ -6,7 +6,7 @@ import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import type { ApolloError } from '@apollo/client';
 import type { History } from '@umijs/runtime';
-import { Badge, Drawer, Image, message, Modal, Space, Tooltip, Typography } from 'antd';
+import { Badge, Drawer, Image, message, Modal, Tooltip, Typography } from 'antd';
 import type { SortOrder } from 'antd/lib/table/interface';
 import React, { useEffect, useRef, useState } from 'react';
 import type { UserTableListItem } from './data.d';
@@ -14,12 +14,12 @@ import { OnlineStatus, UserStatus } from './data.d';
 
 const { Title } = Typography;
 
-const UserTableList: React.FC<{history: History}> = ({history}) => {
+const UserTableList: React.FC<{ history: History }> = ({ history }) => {
   const actionRef = useRef<ActionType>();
   const [row, setRow] = useState<UserTableListItem>();
-  const [defaultFilteredValueId, setDefaultFilteredValueId] = useState<string|undefined>(()=>{
-    if(history.location.query){
-      if(history.location.query.id){
+  const [defaultFilteredValueId, setDefaultFilteredValueId] = useState<string | undefined>(() => {
+    if (history.location.query) {
+      if (history.location.query.id) {
         return history.location.query.id as string;
       }
     }
@@ -53,24 +53,22 @@ const UserTableList: React.FC<{history: History}> = ({history}) => {
   const [selectedRowsState, setSelectedRows] = useState<UserTableListItem[]>([]);
 
   console.log(defaultFilteredValueId);
-  useEffect(()=>{
-    if(history.location.query){
-      if(history.location.query.id){
+  useEffect(() => {
+    if (history.location.query) {
+      if (history.location.query.id) {
         setDefaultFilteredValueId(history.location.query.id as string);
-      }
-      else{
+      } else {
         setDefaultFilteredValueId(undefined);
       }
-    } else{
+    } else {
       setDefaultFilteredValueId(undefined);
     }
-
   }, [history.location.query]);
   const columns: ProColumns<UserTableListItem>[] = [
     {
       title: 'id',
       dataIndex: 'id',
-      formItemProps:{
+      formItemProps: {
         initialValue: defaultFilteredValueId,
       },
       render: (dom, entity) => {
@@ -119,7 +117,7 @@ const UserTableList: React.FC<{history: History}> = ({history}) => {
       sorter: true,
       valueType: 'dateTime',
       hideInForm: true,
-      defaultSortOrder: 'descend'
+      defaultSortOrder: 'descend',
     },
     {
       title: 'Operation',
@@ -268,13 +266,25 @@ const UserTableList: React.FC<{history: History}> = ({history}) => {
       dataIndex: 'userImages',
       render: (_, entity) => {
         return (
-          <Space>
-            {entity.userImages.map((userImage) => {
-              return userImage.image ? (
-                <Image width={64} height={64} src={userImage.image.url} />
-              ) : null;
-            })}
-          </Space>
+          <Image.PreviewGroup>
+            {entity.userImages.map((image) => (
+              <Image
+                style={{
+                  padding: 3,
+                }}
+                width={64}
+                height={64}
+                src={image.image.url}
+              />
+            ))}
+          </Image.PreviewGroup>
+          // <Space>
+          //   {entity.userImages.map((userImage) => {
+          //     return userImage.image ? (
+          //       <Image width={64} height={64} src={userImage.image.url} />
+          //     ) : null;
+          //   })}
+          // </Space>
         );
       },
     },
@@ -289,16 +299,16 @@ const UserTableList: React.FC<{history: History}> = ({history}) => {
     filter: Record<string, React.ReactText[]>,
   ) => {
     console.log({
-      params
+      params,
     });
 
-    if(!Object.keys(sort).length){
+    if (!Object.keys(sort).length) {
       // eslint-disable-next-line no-param-reassign
       sort.createdAt = 'descend';
     }
     const res = await UserService.getListUser(params, sort);
-    if(defaultFilteredValueId){
-      if(res.data && res.data.length){
+    if (defaultFilteredValueId) {
+      if (res.data && res.data.length) {
         setRow(res.data[0]);
       }
     }
@@ -349,15 +359,15 @@ const UserTableList: React.FC<{history: History}> = ({history}) => {
         }}
         request={(params, sort, filter) => queryListUser(params, sort, filter)}
         columns={columns}
-        onReset={()=>{
+        onReset={() => {
           history.replace({
-            query: undefined
+            query: undefined,
           });
         }}
-        onSubmit={()=>{
-          if(defaultFilteredValueId){
+        onSubmit={() => {
+          if (defaultFilteredValueId) {
             history.replace({
-              query: undefined
+              query: undefined,
             });
           }
         }}

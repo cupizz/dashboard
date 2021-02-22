@@ -273,10 +273,20 @@ export class UserService {
       status: {
         equals: 'enabled',
       },
+      roleId: { not: { equals: 'tester' } },
     });
   }
 
-  public static async getUserCount(where: any): Promise<FetchResult<Responses.UserCount>> {
+  /**
+   * @summary count user online
+   * @result UserCount A JSON of object user count
+   * @throws ResponseError
+   */
+  public static async getTotalUser(): Promise<FetchResult<Responses.UserCount>> {
+    return UserService.getUserCount();
+  }
+
+  public static async getUserCount(where?: any): Promise<FetchResult<Responses.UserCount>> {
     const query = gql`
       query getUserCount($where: UserWhereInput) {
         userCount(where: $where)

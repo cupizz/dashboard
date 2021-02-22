@@ -8,6 +8,7 @@ import ProTable from '@ant-design/pro-table';
 import type { ApolloError } from '@apollo/client';
 import { Avatar, Button, Drawer, List, message, Modal, Skeleton } from 'antd';
 import type { SortOrder } from 'antd/lib/table/interface';
+import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'umi';
 import Article from './Article';
@@ -23,24 +24,24 @@ const Post: React.FC<{}> = () => {
   const [initLoadingComment, setInitLoadingComment] = useState<boolean>(false);
   const [loadingComment, setLoadingComment] = useState<boolean>(false);
 
-  const [listUserLiked, setListUserLiked] = useState<Responses.UserInfo[]>([]);
-  const [pageUserLiked, setPageUserLiked] = useState<number>(1);
+  const [listUserLiked, setListUserLiked] = useState<Responses.UserLikedPostItem[]>([]);
+  const [skipUserLiked, setSkipUserLiked] = useState<number>(0);
   const [initLoadingUserLiked, setInitLoadingUserLiked] = useState<boolean>(false);
   const [loadingUserLiked, setLoadingUserLiked] = useState<boolean>(false);
 
-
   const onLoadMoreUserLiked = () => {
     if (row && listUserLiked.length < row.likeCount) {
-      if(listUserLiked.length === 0){
+      if (listUserLiked.length === 0) {
         setInitLoadingUserLiked(true);
       }
       setLoadingUserLiked(true);
       PostService.getUserLikedPost({
         id: row.id,
-        page: pageUserLiked,
+        skip: skipUserLiked,
+        take: defaultTakeComment,
       }).then((data) => {
         setListUserLiked([...listUserLiked, ...data]);
-        setPageUserLiked(pageUserLiked+1);
+        setSkipUserLiked(skipUserLiked + defaultTakeComment);
         setLoadingUserLiked(false);
         setInitLoadingUserLiked(false);
       });
@@ -48,22 +49,24 @@ const Post: React.FC<{}> = () => {
   };
 
   const loadMoreUserLiked =
-  !initLoadingUserLiked && !loadingUserLiked ? (
-    <div
-      style={{
-        textAlign: 'center',
-        marginTop: 12,
-        height: 32,
-        lineHeight: '32px',
-      }}
-    >
-      <Button onClick={()=>{
-        onLoadMoreUserLiked()
-      }}>loading more</Button>
-    </div>
-  ) : null;
-
-
+    !initLoadingUserLiked && !loadingUserLiked ? (
+      <div
+        style={{
+          textAlign: 'center',
+          marginTop: 12,
+          height: 32,
+          lineHeight: '32px',
+        }}
+      >
+        <Button
+          onClick={() => {
+            onLoadMoreUserLiked();
+          }}
+        >
+          loading more
+        </Button>
+      </div>
+    ) : null;
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -118,7 +121,7 @@ const Post: React.FC<{}> = () => {
     setListComments([]);
     setRow(entity);
     setSkipComment(0);
-    setPageUserLiked(1);
+    setSkipUserLiked(0);
     setListUserLiked([]);
     setLoadingComment(true);
     PostService.getCommentsPost({
@@ -147,8 +150,6 @@ const Post: React.FC<{}> = () => {
       });
     }
   };
-
-
 
   const onReloadComment = () => {
     if (row) {
@@ -324,29 +325,31 @@ const Post: React.FC<{}> = () => {
           />
         ) : null}
       </Drawer>
-      <Modal title="Basic Modal" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-      <List
-        loading={initLoadingUserLiked}
-        itemLayout="horizontal"
-        loadMore={row && listUserLiked.length < row.likeCount ? loadMoreUserLiked: null}
-        dataSource={listUserLiked}
-        renderItem={item => (
-          <List.Item>
-            <Skeleton avatar title={false} loading={false} active>
-              <List.Item.Meta
-                avatar={
-                  item.data.avatar ? (
-                    <Avatar src={item.data.avatar.thumbnail} />
-                  ) : null
-                }
-                title={
-                  <Link to={`/users?id=${item.id}`}>{item.data.nickName}</Link>
-                }
-              />
-            </Skeleton>
-          </List.Item>
-        )}
-      />
+      <Modal
+        title={`Users Liked Post #${row?.id}`}
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <List
+          loading={initLoadingUserLiked}
+          itemLayout="horizontal"
+          loadMore={row && listUserLiked.length < row.likeCount ? loadMoreUserLiked : null}
+          dataSource={listUserLiked}
+          renderItem={(item) => (
+            <List.Item>
+              <Skeleton avatar title={false} loading={false} active>
+                <List.Item.Meta
+                  avatar={
+                    item.user.data.avatar ? <Avatar src={item.user.data.avatar.thumbnail} /> : null
+                  }
+                  title={<Link to={`/users?id=${item.user.id}`}>{item.user.data.nickName}</Link>}
+                  description={<em>{moment(item.createdAt).format('YYYY-MM-DD HH:mm')}</em>}
+                />
+              </Skeleton>
+            </List.Item>
+          )}
+        />
       </Modal>
     </PageContainer>
   );

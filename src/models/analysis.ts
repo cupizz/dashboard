@@ -1,15 +1,8 @@
-import { AnalysisService, GoogleAnalyticsService, UserService } from '@/services';
+import { AnalysisService, GoogleAnalyticsService, PostService, UserService } from '@/services';
 import type { Responses } from '@/services/response';
 import type { FetchResult } from '@apollo/client';
 import type { Effect, Reducer } from 'umi';
-import type {
-  OfflineChartData,
-  OfflineDataType,
-  PieDataType,
-  RadarData,
-  SearchDataType,
-  UserLikeCountType,
-} from './data';
+import type { UserLikeCountType } from './data';
 
 export type DashboardAnalysisStateType = {
   platformData?: Responses.DataReportGoogleAnalyticResponse;
@@ -20,19 +13,11 @@ export type DashboardAnalysisStateType = {
   totalUserActive: number;
   totalUserOnline: number;
   timeLineData?: Responses.DataReportGoogleAnalyticResponse;
-
-  ///
+  totalUser: number;
   sessionData?: Responses.DataReportGoogleAnalyticResponse;
   topUserLikeCount: UserLikeCountType[];
   topUserDislikeCount: UserLikeCountType[];
-  salesData: PieDataType[];
-  searchData: SearchDataType[];
-  offlineData: OfflineDataType[];
-  offlineChartData: OfflineChartData[];
-  salesTypeData: PieDataType[];
-  salesTypeDataOnline: PieDataType[];
-  salesTypeDataOffline: PieDataType[];
-  radarData: RadarData[];
+  totalPost: number;
 };
 
 export type IDashboardAnalysisModelEffect<T> = {
@@ -40,6 +25,7 @@ export type IDashboardAnalysisModelEffect<T> = {
   fetchTopUserDislikeCount: T;
   fetchTotalUserOnline: T;
   fetchTotalUserActive: T;
+  fetchTotalUser: T;
   fetchPlatform: T;
   fetchGender: T;
   fetchCity: T;
@@ -47,6 +33,7 @@ export type IDashboardAnalysisModelEffect<T> = {
   fetchCountry: T;
   fetchSessionData: T;
   fetchTimeLineData: T;
+  fetchTotalPost: T;
 };
 
 export type DashboardAnalysisModelEffectType = {} & IDashboardAnalysisModelEffect<Effect>;
@@ -65,16 +52,10 @@ export const initDashboardAnalysisState: DashboardAnalysisStateType = {
   platformData: undefined,
   topUserLikeCount: [],
   topUserDislikeCount: [],
-  salesData: [],
-  searchData: [],
-  offlineData: [],
-  offlineChartData: [],
-  salesTypeData: [],
-  salesTypeDataOnline: [],
-  salesTypeDataOffline: [],
-  radarData: [],
   totalUserActive: 0,
   totalUserOnline: 0,
+  totalUser: 0,
+  totalPost: 0,
 };
 
 const DashboardAnalysisModel: DashboardAnalysisModelType = {
@@ -125,6 +106,26 @@ const DashboardAnalysisModel: DashboardAnalysisModelType = {
       const response: FetchResult<Responses.UserCount> = yield call(UserService.getTotalUserActive);
       const payload: Partial<DashboardAnalysisStateType> = {
         totalUserActive: response.data?.userCount,
+      };
+      yield put({
+        type: 'save',
+        payload,
+      });
+    },
+    *fetchTotalUser(_, { call, put }) {
+      const response: FetchResult<Responses.UserCount> = yield call(UserService.getTotalUser);
+      const payload: Partial<DashboardAnalysisStateType> = {
+        totalUser: response.data?.userCount,
+      };
+      yield put({
+        type: 'save',
+        payload,
+      });
+    },
+    *fetchTotalPost(_, { call, put }) {
+      const response: number = yield call(PostService.getTotalPost);
+      const payload: Partial<DashboardAnalysisStateType> = {
+        totalPost: response,
       };
       yield put({
         type: 'save',

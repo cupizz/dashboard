@@ -198,19 +198,23 @@ export class PostService {
    */
   public static async getUserLikedPost(payload: {
     id: number;
-    page: number;
-  }): Promise<Responses.UserInfo[]> {
+    take: number;
+    skip: number;
+  }): Promise<Responses.UserLikedPostItem[]> {
     const query = gql`
     {
-      adminPosts(where: {id: {equals: ${payload.id}}}) {
-        usersLiked(page: ${payload.page}) {
-          id
-          data {
-            avatar {
-              thumbnail
+      post(where: {id: ${payload.id}}) {
+        usersLikedPost(take: ${payload.take}, skip: ${payload.skip}) {
+          user {
+            id
+            data {
+              avatar {
+                thumbnail
+              }
+              nickName
             }
-            nickName
           }
+          createdAt
         }
       }
     }
@@ -220,6 +224,19 @@ export class PostService {
       fetchPolicy: 'no-cache',
     });
 
-    return res.data.adminPosts[0].usersLiked;
+    return res.data.post.usersLikedPost;
+  }
+
+  public static async getTotalPost(): Promise<number> {
+    const query = gql`
+      {
+        adminPostCount
+      }
+    `;
+    const res = await GraphQLClient.query({
+      query,
+      fetchPolicy: 'no-cache',
+    });
+    return res.data.adminPostCount;
   }
 }

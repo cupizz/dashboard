@@ -3,9 +3,7 @@ import { Col, Row, Tooltip } from 'antd';
 import numeral from 'numeral';
 import React from 'react';
 import { FormattedMessage } from 'umi';
-import styles from '../style.less';
-import { ChartCard, Field, MiniProgress } from './Charts';
-import Trend from './Trend';
+import { ChartCard, Field } from './Charts';
 
 const topColResponsiveProps = {
   xs: 24,
@@ -20,10 +18,16 @@ const IntroduceRow = ({
   loading,
   totalUserActive,
   totalUserOnline,
+  totalUser,
+  totalPost,
+  newUser,
 }: {
   loading: boolean;
   totalUserOnline: number;
   totalUserActive: number;
+  totalUser: number;
+  totalPost: number;
+  newUser: number;
 }) => (
   <Row gutter={24}>
     <Col {...topColResponsiveProps}>
@@ -31,30 +35,33 @@ const IntroduceRow = ({
         bordered={false}
         loading={loading}
         title={
-          <FormattedMessage id="dashboardandanalysis.analysis.visits" defaultMessage="Visits" />
+          <FormattedMessage
+            id="dashboardandanalysis.analysis.totalUser"
+            defaultMessage="Total User"
+          />
         }
         action={
           <Tooltip
             title={
               <FormattedMessage
-                id="dashboardandanalysis.analysis.introduce"
-                defaultMessage="Introduce"
+                id="dashboardandanalysis.analysis.totalUser"
+                defaultMessage="Total User"
               />
             }
           >
             <InfoCircleOutlined />
           </Tooltip>
         }
-        total={numeral(8846).format('0,0')}
+        total={totalUser}
         footer={
           <Field
             label={
               <FormattedMessage
-                id="dashboardandanalysis.analysis.day-visits"
-                defaultMessage="Daily Visits"
+                id="dashboardandanalysis.analysis.totalUser"
+                defaultMessage="Total User"
               />
             }
-            value={numeral(1234).format('0,0')}
+            value={totalUser}
           />
         }
         contentHeight={46}
@@ -111,30 +118,33 @@ const IntroduceRow = ({
         bordered={false}
         loading={loading}
         title={
-          <FormattedMessage id="dashboardandanalysis.analysis.payments" defaultMessage="Payments" />
+          <FormattedMessage
+            id="dashboardandanalysis.analysis.totalPost"
+            defaultMessage="Total Post"
+          />
         }
         action={
           <Tooltip
             title={
               <FormattedMessage
-                id="dashboardandanalysis.analysis.introduce"
-                defaultMessage="Introduce"
+                id="dashboardandanalysis.analysis.totalPost"
+                defaultMessage="Total Post"
               />
             }
           >
             <InfoCircleOutlined />
           </Tooltip>
         }
-        total={numeral(6560).format('0,0')}
+        total={totalPost}
         footer={
           <Field
             label={
               <FormattedMessage
-                id="dashboardandanalysis.analysis.conversion-rate"
-                defaultMessage="Conversion Rate"
+                id="dashboardandanalysis.analysis.totalPost"
+                defaultMessage="Total Post"
               />
             }
-            value="60%"
+            value={totalPost}
           />
         }
         contentHeight={46}
@@ -147,46 +157,34 @@ const IntroduceRow = ({
         loading={loading}
         bordered={false}
         title={
-          <FormattedMessage
-            id="dashboardandanalysis.analysis.operational-effect"
-            defaultMessage="Operational Effect"
-          />
+          <FormattedMessage id="dashboardandanalysis.analysis.newUser" defaultMessage="New User" />
         }
         action={
           <Tooltip
             title={
               <FormattedMessage
-                id="dashboardandanalysis.analysis.introduce"
-                defaultMessage="Introduce"
+                id="dashboardandanalysis.analysis.newUser"
+                defaultMessage="New User"
               />
             }
           >
             <InfoCircleOutlined />
           </Tooltip>
         }
-        total="78%"
+        total={newUser}
         footer={
-          <div style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>
-            <Trend flag="up" style={{ marginRight: 16 }}>
+          <Field
+            label={
               <FormattedMessage
-                id="dashboardandanalysis.analysis.week"
-                defaultMessage="Weekly Changes"
+                id="dashboardandanalysis.analysis.newUser"
+                defaultMessage="New User"
               />
-              <span className={styles.trendText}>12%</span>
-            </Trend>
-            <Trend flag="down">
-              <FormattedMessage
-                id="dashboardandanalysis.analysis.day"
-                defaultMessage="Weekly Changes"
-              />
-              <span className={styles.trendText}>11%</span>
-            </Trend>
-          </div>
+            }
+            value={newUser}
+          />
         }
         contentHeight={46}
-      >
-        <MiniProgress percent={78} strokeWidth={8} target={80} color="#13C2C2" />
-      </ChartCard>
+      ></ChartCard>
     </Col>
   </Row>
 );

@@ -37,6 +37,8 @@ export const DashboardAnalysisContext = createContext<IDashboardAnalysisContextV
     fetchGender: false,
     fetchSessionData: false,
     fetchTimeLineData: false,
+    fetchTotalUser: false,
+    fetchTotalPost: false,
   },
 });
 

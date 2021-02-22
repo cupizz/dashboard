@@ -272,4 +272,9 @@ export namespace Responses {
     id: string;
     createdBy: UserInfo;
   };
+
+  export type UserLikedPostItem = {
+    user: UserInfo;
+    createdAt: string;
+  };
 }

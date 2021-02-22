@@ -109,7 +109,7 @@ const Article: React.FC<ApplicationsProps> = ({
               </strong>
               <br />
               <Link to={`/users?id=${data.createdBy.id}`}>{data.createdBy.data.nickName}</Link> đăng
-              lên <em>{moment(data.updatedAt).format('YYYY-MM-DD HH:mm')}</em>
+              lên <em>{moment(data.createdAt).format('YYYY-MM-DD HH:mm')}</em>
             </div>
           }
           description={<span></span>}
@@ -160,6 +160,9 @@ const Article: React.FC<ApplicationsProps> = ({
                 description={item.content}
               />
             </Skeleton>
+            <div>
+              <em>{moment(item.createdAt).format('YYYY-MM-DD HH:mm')}</em>
+            </div>
           </List.Item>
         )}
       />

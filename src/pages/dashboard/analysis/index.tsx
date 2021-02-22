@@ -26,6 +26,8 @@ const Analysis: React.FC<{}> = () => {
       totalUserOnline,
       platformData,
       timeLineData,
+      totalUser,
+      totalPost,
     },
     dashboardAnalysisLoading,
     dashboardAnalysisEffect,
@@ -48,16 +50,24 @@ const Analysis: React.FC<{}> = () => {
     dashboardAnalysisEffect?.fetchPlatform();
     dashboardAnalysisEffect?.fetchGender();
     dashboardAnalysisEffect?.fetchTimeLineData();
+    dashboardAnalysisEffect?.fetchTotalUser();
+    dashboardAnalysisEffect?.fetchTotalPost();
   }, []);
 
   useEffect(() => {
     SetLoadingIntroduce(
       dashboardAnalysisEffectLoading.fetchTotalUserOnline ||
-        dashboardAnalysisEffectLoading.fetchTotalUserActive,
+        dashboardAnalysisEffectLoading.fetchTotalUserActive ||
+        dashboardAnalysisEffectLoading.fetchTotalUser ||
+        dashboardAnalysisEffectLoading.fetchTotalPost ||
+        dashboardAnalysisEffectLoading.fetchTimeLineData,
     );
   }, [
     dashboardAnalysisEffectLoading.fetchTotalUserOnline,
     dashboardAnalysisEffectLoading.fetchTotalUserActive,
+    dashboardAnalysisEffectLoading.fetchTotalUser,
+    dashboardAnalysisEffectLoading.fetchTotalPost,
+    dashboardAnalysisEffectLoading.fetchTimeLineData,
   ]);
 
   const getSessionData = () => {
@@ -114,6 +124,9 @@ const Analysis: React.FC<{}> = () => {
       </Dropdown>
     </span>
   );
+  const newUser = timeLineData
+    ? parseInt(timeLineData.rows[timeLineData.rows.length - 1].metricValues[2].value, 10)
+    : 0;
   return (
     <GridContent>
       <React.Fragment>
@@ -122,6 +135,9 @@ const Analysis: React.FC<{}> = () => {
             loading={loadingIntroduce}
             totalUserActive={totalUserActive}
             totalUserOnline={totalUserOnline}
+            totalUser={totalUser}
+            totalPost={totalPost}
+            newUser={newUser}
           />
         </Suspense>
         <Suspense fallback={null}>
